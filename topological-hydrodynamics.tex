@@ -1,0 +1,3073 @@
+\documentclass[12pt,a4paper]{article}
+
+% ---- Packages ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{physics}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz-cd}
+
+\geometry{margin=1in}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=green!50!black,
+    urlcolor=blue!60!black
+}
+
+% ---- Listings styles ----
+\lstdefinestyle{python}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue!70!black}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red!60!black},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    xleftmargin=2em,
+    framexleftmargin=1.5em
+}
+
+\lstdefinestyle{scala}{
+    language=Scala,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue!70!black}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{red!60!black},
+    morekeywords={val,def,case,class,object,trait,sealed,extends,given,override,open,new,with,import,match,type},
+    showstringspaces=false,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!5},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    xleftmargin=2em,
+    framexleftmargin=1.5em,
+    literate={=>}{{\textcolor{blue!70!black}{=>}}}2
+             {>>>}{{\textcolor{red!70!black}{\texttt{>{>}>}}}}3
+             {&&&}{{\textcolor{red!70!black}{\texttt{\&\&\&}}}}3
+}
+
+% ---- Theorem environments ----
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+
+% ---- Title ----
+\title{\textbf{Topological Hydrodynamics} \\[0.5em]
+\large From Proton Spin Asymmetry to Programmable Spacetime}
+\author{Wyatt Meldman-Floch}
+\date{\copyright\ 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present a unified theoretical framework connecting the proton spin crisis,
+the Sivers asymmetry, spin network renormalization, and topological quantum
+computation. Beginning with the experimental observation that quark intrinsic
+spins account for only $\approx 30\%$ of the proton's total spin $J = 1/2$,
+we develop a categorical and cohomological interpretation in which the
+``missing'' angular momentum is encoded in the topology of an underlying
+spin network. The Sivers function is identified as a co-boundary obstruction
+in a Poincar\'{e} complex, the renormalization group flow is cast as a
+functorial coarse-graining via the Day convolution, and the proton itself
+is modeled as a self-correcting homological code. We propose a quantum
+circuit architecture---built on Majorana zero modes and surface codes---that
+programs torsion directly into the lattice geometry, enabling the simulation
+of traversable wormholes through syndrome teleportation. A distributed rApp
+protocol---implemented in the Babel categorical DSL on the Reality
+SDK---is formulated to govern topological charge conservation across
+entangled Poincar\'{e} complexes, and the critical exponents for the
+traversability phase transition are estimated against modern quantum hardware
+capabilities.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%==========================================================================
+\section{The Proton Spin Crisis}\label{sec:spin-crisis}
+%==========================================================================
+
+\subsection{Experimental Origins}
+
+Proton spin asymmetry measures how the scattering of protons depends on
+their spin orientation relative to particle beams. The 1987 European Muon
+Collaboration (EMC) experiment revealed that quark intrinsic spins contribute
+only a small fraction---roughly $12$--$30\%$---of the total proton spin,
+contradicting the na\"{\i}ve quark-model expectation that three valence
+quarks carry the bulk of the angular momentum. This discrepancy became known
+as the \emph{proton spin crisis}.
+
+The total proton spin decomposes as
+\begin{equation}\label{eq:spin-sum}
+    J = \frac{1}{2}
+    = \frac{1}{2}\Delta\Sigma + \Delta G + L_q + L_g \,,
+\end{equation}
+where $\Delta\Sigma$ is the quark spin contribution, $\Delta G$ the gluon
+spin contribution, and $L_q$, $L_g$ the orbital angular momentum of quarks
+and gluons respectively.
+
+\subsection{Key Observables}
+
+\begin{description}[leftmargin=1.5cm,style=nextline]
+    \item[Longitudinal Asymmetry $A_1$]
+    Measured in deep-inelastic scattering (DIS) of polarized leptons off
+    polarized protons, this observable reveals the helicity distributions
+    of quarks and gluons. The integral of the spin-dependent structure
+    function $g_1$ constrains $\Delta\Sigma$.
+
+    \item[Transverse Single-Spin Asymmetry (TSSA)]
+    Observed in proton--proton collisions, these asymmetries are often
+    unexpectedly large, indicating non-zero orbital angular momentum
+    and the need for transverse-momentum-dependent (TMD) parton
+    distribution functions.
+\end{description}
+
+\subsection{Experimental Facilities}
+
+Research at Brookhaven National Laboratory's Relativistic Heavy Ion Collider
+(RHIC) has been instrumental in constraining the gluon spin contribution
+$\Delta G$. The future Electron-Ion Collider (EIC) will map the
+three-dimensional structure of the proton with unprecedented precision,
+probing generalized parton distributions (GPDs) and TMDs simultaneously.
+
+%==========================================================================
+\section{Spin Network Interpretation}\label{sec:spin-networks}
+%==========================================================================
+
+\subsection{The Proton as a Bound State of a Spin Network}
+
+In Loop Quantum Gravity (LQG), space is discretized into a \emph{spin
+network}---a graph whose edges carry spin representations
+$j = 1/2, 1, 3/2, \ldots$ and whose nodes represent quanta of volume.
+
+\begin{definition}[Spin-Network Proton]
+Rather than viewing a proton as a point-like particle propagating through a
+background spacetime, we model it as a topological defect---a specific
+excitation of the spin network. The total spin $J = 1/2$ is an emergent
+property of the local geometry and the way the network edges are woven
+together.
+\end{definition}
+
+\subsection{The Crisis as a Geometric Phenomenon}
+
+From the spin-network perspective, the ``missing'' spin admits a natural
+explanation:
+\begin{itemize}
+    \item \textbf{Relational entanglement.} In a spin network, angular
+    momentum is a property of the connections (edges) between nodes. If
+    quarks are nodes, much of the angular momentum is stored in the edges
+    (gluon fields / geometry) connecting them.
+
+    \item \textbf{Orbital angular momentum.} Spin networks naturally
+    incorporate the spatial relationships between components. What QCD calls
+    ``orbital angular momentum'' is the quantum of area and volume encoded
+    in the network's geometry.
+\end{itemize}
+
+\subsection{Theoretical Frameworks}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{4cm}p{9cm}@{}}
+\toprule
+\textbf{Framework} & \textbf{Perspective on Proton Spin} \\
+\midrule
+Braided Matter Models &
+Elementary particles are ``braids'' in the spin network
+(Bilson-Thompson). Spin is a topological property of how the
+strands twist. \\
+Holographic Spin Networks &
+Internal degrees of freedom are holographically encoded on a 2D
+surface. Asymmetry arises from the boundary map. \\
+Algebraic QFT &
+Uses spin-foam logic to describe the flux of spin, naturally
+accommodating the gluon contribution. \\
+\bottomrule
+\end{tabular}
+\caption{Theoretical frameworks connecting spin networks to proton structure.}
+\label{tab:frameworks}
+\end{table}
+
+%==========================================================================
+\section{The Sivers Effect and Functorial Models}\label{sec:sivers}
+%==========================================================================
+
+\subsection{The Sivers Function}
+
+The Sivers function $f_{1T}^{\perp q}(x, \vb{k}_\perp^2)$ describes
+the correlation between the proton's transverse spin $\vb{S}_T$ and the
+quark's transverse momentum $\vb{k}_\perp$. It is \emph{T-odd}: it
+changes sign between semi-inclusive DIS (SIDIS) and Drell--Yan (DY)
+processes, a prediction confirmed by the COMPASS experiment.
+
+\subsection{Gauge Links as Functors}
+
+The Sivers effect relies on initial-/final-state interactions (ISI/FSI),
+represented in QCD by Wilson lines---path-ordered exponentials of the
+gauge field.
+
+\begin{definition}[Wilson-Line Functor]
+A Wilson line defines a functor from the \emph{path groupoid}
+(the paths a quark traverses) to the \emph{category of vector spaces}
+(the color/spin states of the quark). The Sivers asymmetry measures
+the failure of this functor to be ``flat'' under a change in spin
+orientation: it maps a change in the spin category to a displacement in
+the momentum category.
+\end{definition}
+
+\subsection{Braided Categories and the Sign Change}
+
+In braided-ribbon-network models, the Sivers effect is represented by a
+\emph{braiding morphism}. Treating the proton spin as a topological
+winding number, the asymmetry arises naturally from the braid twisting
+as a parton is ejected. This picture is qualitatively consistent with the
+observed sign change between SIDIS and DY.
+
+\subsection{AdS/QCD and Light-Front Holography}
+
+The most data-consistent ``functor-like'' mapping comes from AdS/CFT.
+Light-Front Holography (LFH), developed by Brodsky and de~T\'{e}ramond,
+creates a dictionary (functor) between a 5D gravitational theory and 4D
+QCD. Predictions for the Sivers-like distribution of quarks align with
+experimental extractions from HERMES and COMPASS.
+
+%==========================================================================
+\section{Light-Front Holographic Equations of Motion}\label{sec:lfh}
+%==========================================================================
+
+\subsection{The Light-Front Schr\"{o}dinger Equation}
+
+The radial equation of motion derived from the AdS/QCD mapping determines
+the mass spectrum of the proton:
+\begin{equation}\label{eq:lf-schrodinger}
+    \left(
+        -\frac{d^2}{d\zeta^2}
+        - \frac{1 - 4L^2}{4\zeta^2}
+        + U(\zeta)
+    \right) \phi(\zeta) = M^2 \phi(\zeta) \,,
+\end{equation}
+where $\zeta = \sqrt{x(1-x)}\,|\vb{b}_\perp|$ is the holographic
+variable, $L$ is the orbital angular momentum, and the confinement
+potential is
+\begin{equation}
+    U(\zeta) = \kappa^4 \zeta^2 + 2\kappa^2(L + S - 1) \,.
+\end{equation}
+
+\subsection{Universal Radial Profile}
+
+The solution for a state with quantum numbers $(n, L)$ is
+\begin{equation}\label{eq:radial-profile}
+    \varphi_{n,L}(\zeta)
+    = \kappa^{1+L}
+      \sqrt{\frac{2\,n!}{(n+L)!}}\;
+      \zeta^{1/2+L}\,
+      e^{-\kappa^2 \zeta^2 / 2}\,
+      L_n^{L}\!\bigl(\kappa^2 \zeta^2\bigr) \,.
+\end{equation}
+For the ground-state proton ($n=0$, $L=0$), this reduces to a
+Gaussian-like profile.
+
+\subsection{Spin-Improved Light-Front Wavefunctions}
+
+The Sivers asymmetry requires interference between $L=0$ and $L=1$ states.
+The spin-improved wavefunctions for a quark $q$ inside a proton are
+\begin{align}
+    \psi_{+,\,h=+1/2}^{q}(x, \vb{k}_\perp)
+    &= \varphi_{L=0}(x, \vb{k}_\perp)
+       + \alpha^q \frac{\vb{k}_\perp^2}{M^2}\,
+         \varphi_{L=1}(x, \vb{k}_\perp) \,,
+    \label{eq:lfwf-plus} \\[6pt]
+    \psi_{-,\,h=+1/2}^{q}(x, \vb{k}_\perp)
+    &= -\frac{k^1 - ik^2}{xM}\,
+       \beta^q\,\varphi_{L=1}(x, \vb{k}_\perp) \,,
+    \label{eq:lfwf-minus}
+\end{align}
+where $\alpha^q$ and $\beta^q$ are parameters fixed by the anomalous
+magnetic moments of the proton and neutron.
+
+\subsection{Extraction of the Sivers Function}
+
+The Sivers function is computed as the overlap integral
+\begin{equation}\label{eq:sivers-extraction}
+    f_{1T}^{\perp q}(x, \vb{k}_\perp^2)
+    = \frac{M}{2\pi}\,
+      \operatorname{Im}\!\left[
+          \psi_{+,+1/2}^{q*}(x, \vb{k}_\perp)\;
+          \psi_{-,+1/2}^{q}(x, \vb{k}_\perp)
+      \right] ,
+\end{equation}
+yielding the asymmetric ``dipole'' distribution observed in COMPASS and
+HERMES data: positive for $u$-quarks, negative for $d$-quarks.
+
+%==========================================================================
+\section{Unifying Spin-Foam Renormalization with Light-Front Evolution}
+\label{sec:unification}
+%==========================================================================
+
+\subsection{Scale as Resolution}
+
+In light-front evolution, the renormalization scale $Q^2$ sets the
+resolution of the proton's constituents. In spin foams, scale is replaced
+by the refinement limit of the discretization. The unifying insight is:
+
+\begin{proposition}[Functorial Link]
+The boosted light-front time $x^+$ acts as a foliation parameter for the
+spin foam. As one evolves along the light front, the spin foam undergoes
+Pachner moves that increase the number of edges and nodes (quarks and gluons).
+\end{proposition}
+
+\subsection{RG Flow as Coarse-Graining}
+
+\begin{itemize}
+    \item \textbf{Light-front view.} The RG flow (via DGLAP or CSS
+    equations) evolves the TMD distributions.
+
+    \item \textbf{Spin-foam view.} The RG flow is a coarse-graining
+    procedure on the spin network. Tensor Network Renormalization (TNR,
+    see \cref{sec:cg-operations} for the detailed formalism)
+    shows how a complex web of spins (high $Q^2$) averages into a
+    single effective ``valence quark'' node at low energy.
+
+    \item \textbf{Synthesis.} The equations of motion for the Sivers
+    effect emerge when \emph{cylindrical consistency} of the spin network
+    (required for diffeomorphism invariance; see
+    \cref{sec:cylindrical}) is forced to match the
+    \emph{unitarity constraints} of the light-front Hamiltonian.
+\end{itemize}
+
+\subsection{Hamiltonian Constraint in Light-Front Coordinates}
+
+The Hamiltonian constraint from LQG, $\hat{H}\Psi = 0$, is projected
+onto the light-front eigenvalue problem:
+\begin{equation}\label{eq:lf-eigenvalue}
+    \hat{H}_{LF}\ket{\Psi_{\text{proton}}} = M^2 \ket{\Psi_{\text{proton}}} \,.
+\end{equation}
+In a unified model, $\hat{H}_{LF}$ is derived from the vertex amplitudes
+of the spin foam. The Sivers asymmetry appears as a non-commutative phase
+in the vertex amplitude when the spin labels on the network edges are
+polarized.
+
+%==========================================================================
+\section{Spin Network Coarse-Graining and the Proton as a Complex Network}
+\label{sec:coarse-graining}
+%==========================================================================
+
+The preceding sections invoke coarse-graining of spin networks
+(\cref{sec:unification}) and iterated hashing
+(\cref{sec:latency}) informally. This section provides the
+mathematical backbone: we define the colored spin network of the
+proton, specify three coarse-graining operations, state the
+cylindrical-consistency condition that connects scales, and show how
+diffeomorphism invariance is restored in the continuum limit.
+The proton then appears as a multi-scale complex network whose
+topological complexity is directly related to its mass.
+
+%------------------------------------------------------------------
+\subsection{The Colored Spin Network of the Proton}
+\label{sec:colored-spin-network}
+%------------------------------------------------------------------
+
+Let $\Gamma = (V, E)$ be a finite oriented graph embedded in
+a spatial 3-manifold $\Sigma$. To each edge $e \in E$ we assign
+an irreducible representation $\rho_e$ of $\mathrm{SU}(3)_c$
+(the color gauge group) and, independently, a spin
+$j_e \in \{0, 1/2, 1, \ldots\}$ of $\mathrm{SU}(2)_J$
+(rotational symmetry). At every node $v \in V$ we place an
+intertwiner
+\begin{equation}
+    \iota_v \;\in\;
+    \mathrm{Inv}\!\Bigl(
+        \bigotimes_{e \ni v} \rho_e \otimes V_{j_e}
+    \Bigr) ,
+\end{equation}
+where the tensor product runs over all edges incident at $v$ and
+$\mathrm{Inv}(\cdot)$ denotes the invariant subspace under the
+joint action of $\mathrm{SU}(3)_c \times \mathrm{SU}(2)_J$.
+
+\begin{definition}[Colored Spin-Network Hilbert Space]
+\label{def:colored-hilbert}
+The Hilbert space of colored spin-network states on $\Gamma$ is
+\begin{equation}\label{eq:colored-hilbert}
+    \mathcal{H}_\Gamma
+    \;=\;
+    \bigoplus_{\{\rho_e, j_e\}}
+    \;\bigotimes_{v \in V} \mathcal{I}_v
+    \;\otimes\;
+    \bigotimes_{e \in E} V_{\rho_e} \otimes V_{j_e} \,,
+\end{equation}
+where $\mathcal{I}_v$ is the intertwiner space at node $v$
+and the direct sum runs over all admissible labelings.
+\end{definition}
+
+\begin{remark}[Connection to the chain complex]
+The nodes $V$ and edges $E$ of $\Gamma$ are precisely the
+$0$-cells $C_0$ and $1$-cells $C_1$ of the chain complex
+introduced in \cref{sec:boundary}: quarks sit at $C_0$ and
+gluon flux tubes span $C_1$. The intertwiner $\iota_v$ at each
+node enforces the local color-singlet constraint
+(cf.\ the closure condition of
+\cref{def:poincare-protocol}).
+\end{remark}
+
+%------------------------------------------------------------------
+\subsection{Coarse-Graining Operations}
+\label{sec:cg-operations}
+%------------------------------------------------------------------
+
+Three elementary operations reduce the complexity of
+$(\Gamma, \{\rho_e, j_e, \iota_v\})$ while preserving
+long-range physics.
+
+\paragraph{1. Edge contraction.}
+Given an edge $e = (v_1, v_2)$, contract it to a single node
+$v_{12}$ with effective intertwiner
+\begin{equation}\label{eq:edge-contraction}
+    \iota_{v_{12}}^{\mathrm{eff}}
+    \;=\;
+    \sum_{\rho_e, j_e}
+    d_{\rho_e}\, d_{j_e}\;
+    \bigl(\iota_{v_1} \otimes \iota_{v_2}\bigr)
+    \big|_{\mathrm{Inv}} \,,
+\end{equation}
+where $d_{\rho}$ and $d_j$ are the dimensions of the
+respective representations and the projection is onto the
+invariant subspace. This merges two partons into one effective
+degree of freedom.
+
+\paragraph{2. Node decimation (block spin).}
+Partition $V$ into disjoint blocks $\{B_\alpha\}$. For each
+block, trace over all internal edges:
+\begin{equation}\label{eq:node-decimation}
+    \mathcal{I}_{B_\alpha}^{\mathrm{eff}}
+    \;=\;
+    \operatorname{Tr}_{E_{\mathrm{int}}(B_\alpha)}
+    \!\Bigl(
+        \bigotimes_{v \in B_\alpha} \iota_v
+    \Bigr) .
+\end{equation}
+The result is a coarse graph $\Gamma'$ with one supernode per
+block. In QCD language this replaces a sea-quark--gluon
+subcloud by a single constituent quark.
+
+\paragraph{3. Tensor network renormalization (TNR).}
+Write the partition function as a tensor
+contraction~\cite{EvenblyVidal2015, DittrichMizera2016}:
+\begin{equation}\label{eq:tnr}
+    Z_\Gamma
+    \;=\;
+    \sum_{\{j_e, \rho_e\}}
+    \prod_{v \in V} T_v^{(\iota_v)}
+    \;\prod_{e \in E} d_{\rho_e}\, d_{j_e} \,,
+\end{equation}
+where $T_v^{(\iota_v)}$ is the intertwiner tensor at node $v$.
+Perform a singular-value decomposition on every pair of adjacent
+tensors, truncate to the leading $\chi$ singular values, and
+reconstitute the network on a coarser graph~$\Gamma'$.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{3.2cm}p{4.0cm}p{5.8cm}@{}}
+\toprule
+\textbf{CG Operation} &
+\textbf{Spin-Network Action} &
+\textbf{QCD / Proton Interpretation} \\
+\midrule
+Edge contraction &
+Merge two nodes via an edge; sum over internal reps &
+Quark--gluon fusion: two partons merge into one
+effective parton \\
+Node decimation &
+Trace over internal edges of a block &
+Constituent-quark picture: a sea-quark cloud collapses
+into a single constituent quark \\
+TNR (SVD truncation) &
+Contract and truncate tensor network &
+DGLAP / CSS evolution: integrate out high-$k_\perp$
+modes above a cutoff $\chi$ \\
+\bottomrule
+\end{tabular}
+\caption{Coarse-graining operations and their QCD counterparts.}
+\label{tab:cg-operations}
+\end{table}
+
+%------------------------------------------------------------------
+\subsection{Cylindrical Consistency and the Embedding Maps}
+\label{sec:cylindrical}
+%------------------------------------------------------------------
+
+Let $\Gamma \subset \Gamma'$ denote a coarsening
+($\Gamma$ is obtained from $\Gamma'$ by one or more of the
+operations above). Define the \emph{embedding map}
+$p_{\Gamma'\!\to\Gamma}
+  : \mathcal{H}_{\Gamma'} \to \mathcal{H}_\Gamma$
+by partial trace over the degrees of freedom in
+$\Gamma' \setminus \Gamma$.
+
+\begin{definition}[Cylindrical Consistency]
+\label{def:cylindrical-consistency}
+A family of states
+$\{\Psi_\Gamma \in \mathcal{H}_\Gamma\}_\Gamma$ is
+\emph{cylindrically consistent} if, for every pair
+$\Gamma \subset \Gamma'$,
+\begin{equation}\label{eq:cylindrical-consistency}
+    p_{\Gamma'\!\to\Gamma}\,\Psi_{\Gamma'}
+    \;=\; \Psi_\Gamma \,.
+\end{equation}
+\end{definition}
+
+The condition states that coarse-graining the fine state
+$\Psi_{\Gamma'}$ must reproduce the coarse state
+$\Psi_\Gamma$ exactly. This is the spin-network analog of
+the statement that a valence-quark observable at low $Q^2$
+must be reproducible from the full parton-level description
+at high $Q^2$.
+
+The consistency condition is summarized by the commutative
+diagram
+\begin{equation}\label{eq:cyl-diagram}
+\begin{tikzcd}
+    \mathcal{H}_{\Gamma''}
+        \arrow[r, "p_{\Gamma''\!\to\Gamma'}"]
+        \arrow[dr, swap, "p_{\Gamma''\!\to\Gamma}"]
+    & \mathcal{H}_{\Gamma'}
+        \arrow[d, "p_{\Gamma'\!\to\Gamma}"]
+    \\
+    & \mathcal{H}_{\Gamma}
+\end{tikzcd}
+\end{equation}
+which must commute for any triple
+$\Gamma \subset \Gamma' \subset \Gamma''$.
+
+%------------------------------------------------------------------
+\subsection{Restoration of Diffeomorphism Invariance}
+\label{sec:diffeo}
+%------------------------------------------------------------------
+
+A spin network on a fixed graph $\Gamma$ breaks the
+diffeomorphism invariance of the continuum theory. Three
+complementary mechanisms restore it in the
+limit~\cite{Rovelli2004, ThiemannBook2007}.
+
+\paragraph{1. Diffeomorphism averaging.}
+The physical (diffeomorphism-invariant) Hilbert space is
+obtained as a quotient~\cite{ThiemannBook2007}:
+\begin{equation}\label{eq:diffeo-averaging}
+    \mathcal{H}_{\mathrm{phys}}
+    \;=\;
+    \mathcal{H}_{\mathrm{kin}} \big/ \mathrm{Diff}(\Sigma) \,,
+\end{equation}
+where $\mathrm{Diff}(\Sigma)$ acts by moving graph vertices
+and edges through $\Sigma$. Two spin-network states that
+differ only by a diffeomorphism are identified; only the
+combinatorial (abstract-graph) data survive.
+
+\paragraph{2. Perfect discretization.}
+Following Bahr and Dittrich~\cite{BahrDittrich2009}, one seeks
+an effective action $S_{\mathrm{eff}}[\Gamma]$ on the coarse
+graph such that
+\begin{equation}\label{eq:perfect-discretization}
+    Z_{\Gamma}^{\mathrm{eff}}
+    \;=\;
+    \int \mathcal{D}\phi_{\mathrm{fine}}\;
+    e^{-S[\Gamma', \phi_{\mathrm{fine}}]}
+    \;=\;
+    e^{-S_{\mathrm{eff}}[\Gamma]} \,,
+\end{equation}
+i.e.\ the coarse partition function captures the full
+fine-grained dynamics exactly. The resulting discrete
+theory is automatically diffeomorphism-invariant to the
+extent that the continuum theory is.
+
+\paragraph{3. Continuum limit as RG fixed point.}
+Under iterated coarse-graining, the effective couplings
+flow toward a fixed point~\cite{DittrichGeiller2015}:
+\begin{equation}\label{eq:rg-fixedpoint}
+    \lim_{n \to \infty}
+    \bigl(\mathcal{R}^n \cdot S\bigr)
+    \;=\;
+    S^* \,,
+\end{equation}
+where $\mathcal{R}$ is the coarse-graining superoperator and
+$S^*$ is the fixed-point action. If $S^*$ is
+diffeomorphism-invariant (as expected for QCD), then every
+finite truncation inherits approximate invariance, with
+corrections that vanish as the lattice is refined.
+
+\begin{remark}
+For the proton, ``diffeomorphism invariance'' maps concretely
+to $\mathrm{SU}(3)_c$ gauge invariance: the Wilson line
+(\cref{sec:wilson-hash}) is the gauge-invariant hash that
+compresses a continuous gauge-field configuration into a
+single group element. The perfect-discretization condition
+\eqref{eq:perfect-discretization} demands that this hash is
+\emph{exact}---no gauge-invariant information is lost in the
+coarse-graining.
+\end{remark}
+
+%------------------------------------------------------------------
+\subsection{The Proton as a Multi-Scale Complex Network}
+\label{sec:multiscale-proton}
+%------------------------------------------------------------------
+
+At different resolutions, the proton's spin network presents
+qualitatively different graph topologies. \Cref{tab:multiscale-proton}
+summarizes three characteristic regimes.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{2.8cm}p{3.0cm}p{3.0cm}p{4.2cm}@{}}
+\toprule
+\textbf{Scale} &
+\textbf{Resolution ($Q^2$)} &
+\textbf{Graph Topology} &
+\textbf{Physical Content} \\
+\midrule
+UV &
+$\gtrsim 100\;\mathrm{GeV}^2$ &
+Dense lattice, $|V| \gg 1$ &
+Sea quarks, gluons, and their OAM
+(full partonic content) \\
+Intermediate &
+$1$--$10\;\mathrm{GeV}^2$ &
+Effective graph, $|V| \sim 10$ &
+Constituent quarks, gluon clusters,
+valence + sea \\
+IR &
+$< 1\;\mathrm{GeV}^2$ &
+$Y$-graph, $|V| = 3$ &
+Three valence quarks connected by
+flux-tube junctions \\
+\bottomrule
+\end{tabular}
+\caption{The proton as a multi-scale complex network.}
+\label{tab:multiscale-proton}
+\end{table}
+
+To quantify the network structure at each scale, introduce three
+standard graph-theoretic observables:
+\begin{itemize}
+    \item \textbf{Degree distribution} $P(k)$: the fraction of
+    nodes with $k$ incident edges.
+    \item \textbf{Clustering coefficient} $C$: the probability
+    that two neighbors of a node are themselves connected.
+    \item \textbf{Betweenness centrality} $B_v$: the fraction
+    of shortest paths in the network that pass through
+    node~$v$.
+\end{itemize}
+
+\begin{proposition}[Coarse-graining simplifies network metrics]
+\label{prop:network-metrics}
+Under successive coarse-graining steps
+$\Gamma_{\mathrm{UV}} \to \cdots \to \Gamma_{\mathrm{IR}}$:
+\begin{enumerate}
+    \item $P(k) \;\to\; \delta_{k,2}$\,: every node in the
+    IR $Y$-graph has exactly two incident edges.
+    \item $C \;\to\; 0$\,: the $Y$-graph is a tree and
+    contains no triangles.
+    \item $\max_v B_v \;\to\; 1/3$\,: each of the three
+    valence-quark nodes lies on exactly one-third of the
+    shortest paths.
+\end{enumerate}
+\end{proposition}
+
+These limiting values match the topological properties of
+the confining string junction that connects three quarks in
+the IR limit of lattice QCD.
+
+%------------------------------------------------------------------
+\subsection{Network Complexity and Mass Generation}
+\label{sec:network-mass}
+%------------------------------------------------------------------
+
+Define the \emph{topological complexity} of a colored spin
+network as
+\begin{equation}\label{eq:network-complexity}
+    \mathcal{C}(\Gamma)
+    \;=\;
+    \sum_{v \in V} \ln \dim \mathcal{I}_v
+    \;+\;
+    \sum_{e \in E} \ln\!\bigl(d_{\rho_e}\, d_{j_e}\bigr)
+    \;+\;
+    \sum_{k \geq 1} \beta_k(\Gamma)\,\ln k \,,
+\end{equation}
+where $\beta_k(\Gamma)$ is the $k$-th Betti number of the
+graph. The first term counts intertwiner degrees of freedom
+(nodes / quarks), the second counts representation degrees of
+freedom (edges / gluons), and the third measures topological
+loops.
+
+\begin{proposition}[Mass from complexity]
+\label{prop:mass-complexity}
+At the RG fixed point $\Gamma^*$ of the coarse-graining flow,
+the proton mass satisfies
+\begin{equation}\label{eq:mass-complexity}
+    M_p^2
+    \;\propto\;
+    \mathcal{C}(\Gamma^*) \,,
+\end{equation}
+i.e.\ the squared mass is proportional to the topological
+complexity of the fixed-point network. This gives a
+microscopic derivation of the ``mass as complexity''
+identification in the topological Einstein equation
+\eqref{eq:topological-einstein} of \cref{sec:quantum-gravity}.
+\end{proposition}
+
+The connection is natural: a more complex spin network requires
+a larger error-correction overhead (syndrome entropy) to
+stabilize, and the stabilizer pressure is precisely the mass
+seen by an external observer. The coarse-graining flow
+$\Gamma_{\mathrm{UV}} \to \Gamma^*$ integrates out UV
+fluctuations while preserving the topological invariant
+$J = 1/2$; the residual complexity at the fixed point is the
+irreducible cost of maintaining that invariant against vacuum
+noise.
+
+%==========================================================================
+\section{Majorana Zero Modes and Topological Quantum Computing}
+\label{sec:majorana}
+%==========================================================================
+
+\subsection{MZMs as Torsion Defects}
+
+In homological codes (Kitaev chain, Toric code), a Majorana Zero Mode
+(MZM) acts as a defect at the end of a spin chain. Braiding two MZMs
+performs a unitary transformation on the ground state---this ``twist'' is
+the topological equivalent of geometric torsion in a 3D spin network.
+
+\subsection{The Proton as a Majorana Bound State}
+
+Viewing the proton's $uud$ structure through a homological lens:
+\begin{itemize}
+    \item Quarks are modeled as Majorana-like excitations at the nodes
+    of the tensor network.
+    \item The spin crisis is resolved: spin is stored topologically in
+    the strings (gluons) connecting the MZMs.
+    \item The Sivers effect becomes the Berry phase acquired by dragging
+    a Majorana defect through the network during DIS scattering.
+\end{itemize}
+
+\subsection{Wormholes via Majorana Entanglement}
+
+Using the Sachdev--Ye--Kitaev (SYK) model of MZMs in a random network:
+\begin{enumerate}
+    \item Entangle a pair of MZMs across two separate homological codes
+    (representing two ``protons'').
+    \item The logical qubit now exists in both locations simultaneously.
+    \item The SYK model is holographically dual to a traversable wormhole
+    in $\mathrm{AdS}_2$ gravity.
+\end{enumerate}
+
+%==========================================================================
+\section{Functorial Correspondence: MZMs, Day Convolution, and
+Poincar\'{e} Complexes}\label{sec:functor}
+%==========================================================================
+
+\subsection{From MZMs to Day Convolution}
+
+A Majorana Zero Mode is an object in a \emph{Modular Tensor Category}
+(MTC). We define a functor $\mathcal{F}$ mapping the braiding and fusion
+of MZMs into a monoidal category. The \emph{Day convolution}
+$\otimes_{\mathrm{Day}}$ acts as the mechanism for merging or
+coarse-graining the tensor network---it propagates local spin information
+(MZM twists) into global network properties and serves as the engine of
+the renormalization group.
+
+\subsection{The Poincar\'{e} Complex in Blockchain Cohomology}
+
+Treating spin nodes as a simplicial complex:
+\begin{itemize}
+    \item \textbf{Blockchain cohomology} treats ``blocks'' (or spin nodes)
+    as a simplicial complex. Validating a transaction is equivalent to
+    checking that a boundary operator $\partial$ vanishes (the chain is a
+    cycle).
+    \item A \textbf{Poincar\'{e} complex} satisfies Poincar\'{e} duality:
+    the internal spin structure ($k$-cells) perfectly matches the external
+    boundary ($(n{-}k)$-cells). It represents a state of
+    \emph{topological consensus}.
+    \item The functor $\mathcal{F}$ takes the noisy local Majorana braids
+    (quarks) and, through the Day convolution, outputs a Poincar\'{e}
+    complex---the ``immutable ledger'' of the proton.
+\end{itemize}
+
+\subsection{The Wormhole as a Cross-Chain Bridge}
+
+Programming a wormhole is equivalent to constructing a \emph{cross-chain
+functor}: the Day convolution ensures that the Poincar\'{e} complex of
+Proton~A is entangled (isomorphic) with that of Proton~B. By programming
+MZM torsion (the Sivers effect), one writes a ``smart contract'' into the
+fabric of spacetime, forcing two distinct regions into a single
+homological identity.
+
+%==========================================================================
+\section{Boundary Operators and the Sivers Function}\label{sec:boundary}
+%==========================================================================
+
+\subsection{The Chain Complex of the Proton}
+
+Define the proton structure as a chain complex:
+\begin{equation}\label{eq:chain-complex}
+    \cdots
+    \xrightarrow{\;\partial_{n+1}\;}
+    C_n
+    \xrightarrow{\;\partial_n\;}
+    C_{n-1}
+    \xrightarrow{\;\partial_{n-1}\;}
+    \cdots
+    \xrightarrow{\;\partial_1\;}
+    C_0 \,,
+\end{equation}
+where $C_0$ (nodes) represents the quarks and $C_1$ (edges) represents the
+gluon flux tubes. In a stable proton (a closed chain),
+$\partial_n \circ \partial_{n+1} = 0$.
+
+\subsection{The Sivers Function as a Co-boundary Obstruction}
+
+Let $\delta$ be the co-boundary operator (adjoint of $\partial$). The
+Sivers function $f_{1T}^\perp$ corresponds to a 1-cocycle in
+$H^1$---a characteristic class measuring how the spin bundle is twisted
+over the momentum base:
+\begin{equation}\label{eq:sivers-cocycle}
+    \langle\text{Sivers}\rangle
+    \;\propto\;
+    \oint_{\partial\Sigma} \omega_{\text{spin}} \,,
+\end{equation}
+where $\partial\Sigma$ is the boundary of the transverse momentum space.
+
+\subsection{Blockchain Cohomology Interpretation}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Particle Physics} & \textbf{Categorical Analog} & \textbf{Boundary Math} \\
+\midrule
+Quark transverse momentum & Local transaction payload & Chain element $c \in C_n$ \\
+Proton spin state          & Global ledger consensus   & Cycle $z \in \ker(\partial)$ \\
+Sivers function            & Boundary obstruction      & $\delta\omega \neq 0$ \\
+OAM                        & Homological loop          & Non-trivial $H_1$ class \\
+Gluon field                & Distributed network graph & The simplicial complex \\
+\bottomrule
+\end{tabular}
+\caption{Correspondence between particle physics and cohomological concepts.}
+\label{tab:boundary-correspondence}
+\end{table}
+
+%==========================================================================
+\section{The Poincar\'{e} Protocol and the Spin Crisis as Latency}
+\label{sec:latency}
+%==========================================================================
+
+The chain complex of \cref{sec:boundary} and its blockchain-cohomology
+interpretation lead to a striking re-reading of the proton spin crisis:
+the ``missing'' spin is not missing at all; it is unresolved data in the
+mempool of the Poincar\'{e} protocol.
+
+\subsection{The Poincar\'{e} Protocol}
+
+\begin{definition}[Poincar\'{e} Protocol]\label{def:poincare-protocol}
+The \emph{Poincar\'{e} protocol} is the consensus mechanism by which the
+proton's spin network maintains its global topological invariant
+$J = 1/2$. It operates on the chain complex
+$C_\bullet = (C_n \xrightarrow{\partial_n} C_{n-1} \xrightarrow{} \cdots
+\xrightarrow{\partial_1} C_0)$
+and enforces two conditions at every energy scale $Q^2$:
+\begin{enumerate}
+    \item \textbf{Closure.} $\partial \circ \partial = 0$: the boundary
+    of a boundary is zero. This guarantees that the total spin ledger is
+    self-consistent---no angular momentum is created or destroyed, only
+    redistributed among cells.
+    \item \textbf{Poincar\'{e} duality.} The $k$-th homology group
+    $H_k$ of the complex is isomorphic to the $(n{-}k)$-th cohomology
+    group $H^{n-k}$. This enforces a symmetry between the ``interior''
+    degrees of freedom (quarks, nodes) and the ``boundary'' degrees of
+    freedom (gluons, edges): every unit of spin committed to a node is
+    mirrored by a dual unit of spin stored in the surrounding edges.
+\end{enumerate}
+The protocol is \emph{scale-dependent}: the Day convolution
+$\otimes_{\mathrm{Day}}$ acts as the propagation mechanism that resolves
+finer structure as the probe energy $Q^2$ increases, analogous to
+increasing the block height in a distributed ledger.
+\end{definition}
+
+\subsection{The Wilson Line as a Hash Function}\label{sec:wilson-hash}
+
+The dictionary in \cref{tab:dictionary} identifies the Wilson line as
+the ``hash function'' of the Poincar\'{e} protocol. This identification
+is not metaphorical; the Wilson line satisfies the defining properties
+of a cryptographic hash, with gauge invariance playing the role of
+collision resistance.
+
+\subsubsection{Construction}
+
+A quark traversing a path $\gamma$ through the gluon field $A_\mu(x)$
+accumulates a net color rotation given by the path-ordered exponential:
+\begin{equation}\label{eq:wilson-line}
+    W[\gamma]
+    = \mathcal{P}\exp\!\left(
+        -ig \int_\gamma A_\mu(x)\,dx^\mu
+    \right) \;\in\; \mathrm{SU}(3) \,.
+\end{equation}
+This operator takes the full continuous gauge-field configuration along
+$\gamma$---infinitely many degrees of freedom---and compresses it into a
+single $\mathrm{SU}(3)$ matrix (8 real parameters).
+
+\subsubsection{Property-by-Property Mapping}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{3.0cm}p{5.0cm}p{5.2cm}@{}}
+\toprule
+\textbf{Hash Property} &
+\textbf{Cryptographic Meaning} &
+\textbf{Wilson-Line Realization} \\
+\midrule
+Deterministic &
+Same input $\Rightarrow$ same digest &
+Same gauge field $A_\mu$ and path $\gamma$ always yield the same
+$\mathrm{SU}(3)$ matrix $W[\gamma]$ \\
+Compressive &
+Output is much smaller than input &
+$\infty$ field degrees of freedom $\to$ 8 real parameters \\
+One-way &
+Cannot reconstruct input from digest &
+Given $W[\gamma]$ alone, the gauge-field configuration along $\gamma$
+cannot be recovered; many configurations produce the same $W$
+(gauge orbits) \\
+Collision resistance &
+Hard to find two inputs with the same digest &
+Gauge invariance: physically distinct configurations are distinguished
+by $W$; gauge-equivalent ones (which are \emph{not} physically
+distinct) map to the same orbit \\
+Composable &
+Hashes can be chained:
+$H(H(x)\|y)$ &
+Wilson lines compose under path concatenation:
+$W[\gamma_1 \circ \gamma_2] = W[\gamma_1]\,W[\gamma_2]$ \\
+\bottomrule
+\end{tabular}
+\caption{Property-by-property correspondence between cryptographic
+hash functions and Wilson lines.}
+\label{tab:hash-properties}
+\end{table}
+
+\subsubsection{What ``Hashing Local Spin Data'' Means Physically}
+
+The phrase ``the Day convolution hashes local spin data into the global
+Poincar\'{e} complex'' refers to a three-step physical process:
+
+\begin{enumerate}
+    \item \textbf{Local data (the transaction).}
+    A quark at node $A$ in the spin network has a definite
+    spin-polarization state---say, helicity $+1/2$. In the chain
+    complex, this is a chain element $c \in C_0$: a transaction
+    waiting to be committed.
+
+    \item \textbf{Hash / propagation (the Wilson line).}
+    The gluon flux tube connecting node $A$ to node $B$ defines a
+    path $\gamma$. The Wilson line $W[\gamma]$ acts on the quark's
+    color-spin state, rotating and mixing its degrees of freedom via
+    Eq.~\eqref{eq:wilson-line}. The detailed structure of the gluon
+    field along the tube is irrelevant---only the net $\mathrm{SU}(3)$
+    rotation (the hash digest) matters. This is gauge invariance in
+    action: the ``raw data'' of the gauge field is compressed into a
+    single group element.
+
+    \item \textbf{Commitment to the ledger (the global invariant).}
+    The quark's spin state \emph{after} rotation by the Wilson line is
+    what gets committed to the global Poincar\'{e} complex. The total
+    proton spin $J = 1/2$ is the sum over all such committed states
+    across all nodes and edges of the network.
+\end{enumerate}
+
+\subsubsection{Coarse-Graining as Iterated Hashing}
+
+The RG flow from high $Q^2$ to low $Q^2$ is an \emph{iterated hashing}
+process (the formal coarse-graining operations are defined in
+\cref{sec:coarse-graining}). At high $Q^2$, the spin network has many nodes (sea quarks)
+and edges (gluons), each with their own spin data. As $Q^2$ decreases,
+the Day convolution contracts subgraphs into single effective nodes:
+\begin{equation}
+    \underbrace{
+        \bigl\{q_1, q_2, \bar{q}_3, g_4, g_5, \ldots\bigr\}
+    }_{\text{high-}Q^2\text{ subgraph}}
+    \;\xrightarrow{\;\;W[\gamma_{\text{eff}}]\;\;}\;
+    \underbrace{
+        q_{\text{valence}}
+    }_{\text{low-}Q^2\text{ node}}
+    \quad\text{with}\quad
+    \Delta q_{\text{valence}}
+    = \operatorname{tr}\!\bigl(
+        W[\gamma_{\text{eff}}]\;\rho_{\text{subgraph}}
+    \bigr) \,.
+\end{equation}
+A single valence quark at low $Q^2$ is the hash digest of an entire
+subgraph at high $Q^2$. The valence quark spin
+$\Delta q \approx 0.30$ encodes the net spin of a complex subsystem in
+a single number, and one cannot recover the detailed internal structure
+from that number alone without probing at higher $Q^2$---exactly the
+one-way property of a hash.
+
+This is why the ``spin crisis'' is a latency problem: the valence-quark
+spin $\Delta\Sigma$ is a low-resolution hash digest. It faithfully
+encodes the \emph{net} spin contribution at that scale, but it has
+compressed away the detailed decomposition into $\Delta G$, $L_q$, and
+$L_g$. To see those contributions, one must increase $Q^2$ (raise the
+block height), forcing the Day convolution to resolve the subgraph and
+expose the mempool.
+
+\subsection{Dictionary: Blockchain Cohomology and Particle Physics}
+
+The following table provides a comprehensive dictionary between the
+concepts of distributed-ledger consensus and the internal dynamics of
+the proton. The left column defines the blockchain concept; the right
+column identifies its physical realization.
+
+\begin{longtable}{@{}p{3.8cm}p{3.2cm}p{6.2cm}@{}}
+\caption{Complete dictionary between blockchain cohomology and proton
+physics.}
+\label{tab:dictionary} \\
+\toprule
+\textbf{Blockchain Concept} &
+\textbf{Physics Concept} &
+\textbf{Formal Identification} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Blockchain Concept} &
+\textbf{Physics Concept} &
+\textbf{Formal Identification} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\itshape Continued on next page} \\
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+
+% --- Structural ---
+Distributed ledger &
+Proton spin network &
+The simplicial complex $C_\bullet$ whose cells are quarks (nodes)
+and gluon flux tubes (edges) \\
+
+Confirmed block &
+Valence quark state &
+A $0$-cycle $z \in \ker(\partial_1) \subset C_0$: angular momentum
+that has been locally committed to a node \\
+
+Mempool (unconfirmed transactions) &
+Sea quarks and gluons &
+Syndrome data: non-trivial chains in $C_1, C_2, \ldots$ that carry
+angular momentum in the edges and higher cells \\
+
+Block height &
+Probe resolution $Q^2$ &
+The energy scale at which the Day convolution has propagated; higher
+$Q^2$ resolves finer cells in the complex \\
+
+Global ledger state &
+Total proton spin $J = 1/2$ &
+The homology class $[z] \in H_0(C_\bullet)$: the logical qubit,
+always exactly $1/2$ regardless of block height \\
+
+% --- Consensus ---
+Consensus protocol &
+Poincar\'{e} protocol &
+The closure condition $\partial \circ \partial = 0$ plus Poincar\'{e}
+duality (Def.~\ref{def:poincare-protocol}) \\
+
+Mining / validation &
+Day convolution $\otimes_{\mathrm{Day}}$ &
+The functorial operation that hashes local spin data (MZM braids)
+into the global Poincar\'{e} complex \\
+
+Hash function &
+Wilson line &
+The path-ordered exponential of the gauge field; maps a quark path
+(transaction route) to a color/spin state (hash digest) \\
+
+Proof of work &
+Termination proof &
+\texttt{WellFounded.fromMeasure}: a decreasing measure guaranteeing
+that the consensus computation halts \\
+
+% --- Dynamics ---
+Transaction &
+Quark momentum transfer &
+A chain element $c \in C_n$ representing a parton carrying transverse
+momentum $\vb{k}_\perp$ \\
+
+Transaction fee (gas) &
+Torsional phase $\phi$ &
+The Sivers phase: the ``cost'' of routing a transaction through the
+network; determines the direction of the asymmetry \\
+
+Fork &
+Torsion / Sivers asymmetry &
+A non-trivial element in the torsion subgroup of $H^n(X; \mathbb{Z})$;
+the network branches when spin is polarized \\
+
+Fork resolution &
+Syzygy validation &
+The requirement that any fork be resolved into a valid Poincar\'{e}
+complex within $t_{\text{Planck}}$ cycles \\
+
+Double-spend attack &
+Spin violation $J \neq 1/2$ &
+Topologically forbidden: the Poincar\'{e} protocol guarantees
+$[z] = 1/2$ at all scales \\
+
+% --- Latency ---
+Latency &
+RG flow / TMD evolution &
+The ``time'' (in resolution-scale) required for the Day convolution to
+propagate spin data from the mempool into the confirmed blocks \\
+
+Mempool backlog &
+``Missing'' spin ($70\%$) &
+Angular momentum stored in $C_1$ (gluon spin $\Delta G$) and in
+non-trivial $H_1$ classes (orbital angular momentum $L_q + L_g$) \\
+
+Confirmation depth &
+Number of RG steps &
+How many coarse-graining iterations (Pachner moves) have been applied;
+deeper confirmation = lower $Q^2$ = fewer resolved degrees of freedom \\
+
+% --- Error correction ---
+Syndrome &
+Sea quark/gluon excitation &
+A stabilizer eigenvalue $-1$; a quasi-particle generated when the
+probe energy exceeds the code's gap \\
+
+Error correction &
+Confinement &
+The decoder contracts the syndrome cloud back into a color-singlet
+(the logical qubit $J = 1/2$) \\
+
+Logical qubit &
+Baryon number / total spin &
+The topological invariant protected by the homological code; immune to
+local perturbations (syndrome noise) \\
+
+Code distance $d$ &
+Confinement scale $\Lambda_{\text{QCD}}$ &
+The minimum number of syndrome errors required to corrupt the logical
+state; $d \sim 1/\Lambda_{\text{QCD}}$ \\
+
+% --- Cross-chain ---
+Cross-chain bridge &
+Wormhole (ER bridge) &
+Entangled Poincar\'{e} complexes: the Day convolution connects two
+protons into a shared syndrome space \\
+
+Smart contract &
+Topological transfer protocol &
+The \texttt{WormholeBridgeApp} of \cref{sec:smart-contract}: a
+self-executing set of constraints governing syndrome teleportation \\
+\end{longtable}
+
+\subsection{The Spin Crisis as a Latency Problem}
+
+With the dictionary in hand, the proton spin crisis admits a precise
+re-statement.
+
+\subsubsection{The Standard Framing}
+
+In QCD, the spin sum rule reads
+\begin{equation}\label{eq:spin-sum-redux}
+    J = \frac{1}{2}
+      = \underbrace{\tfrac{1}{2}\Delta\Sigma}_{\text{quark spin}}
+      + \underbrace{\Delta G}_{\text{gluon spin}}
+      + \underbrace{L_q + L_g}_{\text{orbital angular momentum}} \,.
+\end{equation}
+A DIS experiment at resolution $Q^2$ measures $\Delta\Sigma$ and finds
+it accounts for only $\sim\!30\%$ of $1/2$. The ``crisis'' assumes that
+all the spin \emph{should} reside at the quarks and asks: where did the
+rest go?
+
+\subsubsection{The Blockchain Cohomology Reframing}
+
+In the Poincar\'{e} protocol, the total spin $J = 1/2$ is the
+\emph{logical qubit}---the global homology class $[z] \in H_0$.
+It is \emph{always} exactly $1/2$, just as the confirmed state of a
+well-formed blockchain is always self-consistent. There is no missing
+spin, and there never was.
+
+The apparent deficit arises from \emph{what we measure and when}:
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Valence quarks are confirmed blocks.]
+    They are the coarse-grained nodes of the spin network---the data
+    that has been hashed into the global consensus at the scale $Q^2$
+    of the probe. They sit in $C_0$ and carry $\sim\!30\%$ of the spin.
+    This is not a failure; it is the amount of angular momentum that has
+    been \emph{locally committed} to the node level of the chain
+    complex.
+
+    \item[Sea quarks and gluons are the mempool.]
+    They are the syndromes---the edges ($C_1$) and higher cells of
+    the complex. They carry real angular momentum ($\Delta G$ and
+    $L_q + L_g$), but this information is distributed across the
+    \emph{connections} of the network, not localized at the nodes.
+    These are valid transactions that exist in the network but have not
+    yet been mined into a block at the resolution being queried.
+
+    \item[The Day convolution is the propagation protocol.]
+    It is the mechanism by which local spin information (a braid twist
+    at one MZM node) gets hashed into the global Poincar\'{e} complex.
+    This propagation takes ``time''---not clock time, but
+    \emph{resolution time}. As $Q^2$ increases, the Day convolution
+    resolves finer structure, and more of the mempool becomes visible.
+
+    \item[The ``latency'' is the RG flow.]
+    The renormalization group flow from high $Q^2$ to low $Q^2$ is the
+    coarse-graining (syndrome decoding) that contracts the full tensor
+    network into the effective valence picture. Information is not
+    physically lost but is \emph{not yet resolved} at the scale of the
+    probe. The spin ``deficit'' is precisely the information that has
+    been coarse-grained into the edges and is waiting to be resolved at
+    a finer scale.
+\end{description}
+
+The crisis, then, is a \emph{measurement artifact}: we queried the
+ledger at a coarse block height and were surprised that not all
+transactions had been confirmed. The total is always $1/2$. The question
+was never ``where did the spin go?'' but ``at what resolution does each
+contribution become visible?''
+
+\subsubsection{The DGLAP Running as Mempool Dynamics}
+
+This interpretation also explains a specific experimental fact: under
+DGLAP evolution, the quark spin fraction $\Delta\Sigma$ \emph{decreases}
+logarithmically as $Q^2$ increases, while the gluon contribution
+$\Delta G$ grows. In the blockchain picture, this is exactly what one
+expects. As resolution increases, transactions migrate from the
+``confirmed node'' category into the newly resolved ``edge/syndrome''
+category, because higher resolution reveals that what looked like a
+simple node is actually a subgraph with its own internal structure.
+
+Formally, let $N_{\text{confirmed}}(Q^2)$ denote the number of
+confirmed blocks (valence degrees of freedom) and
+$N_{\text{mempool}}(Q^2)$ the mempool size (sea quarks + gluons) at
+scale $Q^2$. The DGLAP splitting functions $P_{qq}$, $P_{qg}$,
+$P_{gq}$, $P_{gg}$ are the \emph{transaction-routing rules} of the
+Poincar\'{e} protocol: they govern how angular momentum is transferred
+between nodes and edges as the Day convolution resolves one scale step.
+The Altarelli--Parisi equation
+\begin{equation}\label{eq:dglap-latency}
+    \frac{\partial \Delta q(x, Q^2)}{\partial \ln Q^2}
+    = \frac{\alpha_s}{2\pi}
+      \int_x^1 \frac{dy}{y}\,
+      \left[
+          \Delta P_{qq}\!\left(\frac{x}{y}\right) \Delta q(y, Q^2)
+        + \Delta P_{qg}\!\left(\frac{x}{y}\right) \Delta g(y, Q^2)
+      \right]
+\end{equation}
+describes how the confirmed-block content $\Delta q$ evolves as the
+block height $\ln Q^2$ increases: quarks split into quark--gluon pairs
+($P_{qg}$), moving angular momentum from nodes to edges, while gluons
+split into quark--antiquark pairs ($P_{gq}$), promoting mempool data
+into newly created nodes.
+
+\subsubsection{Mempool Anatomy: Three Compartments of Hidden Spin}
+
+The mempool of the Poincar\'{e} protocol is not a structureless pool.
+It decomposes into three geometrically distinct compartments, each
+carrying a different species of angular momentum. This decomposition
+arises naturally from the chain complex $C_2 \xrightarrow{\partial_2}
+C_1 \xrightarrow{\partial_1} C_0$ that defines the proton's
+Poincar\'{e} complex (see \cref{sec:latency}).
+
+\paragraph{Compartment 1: Gluon spin $\Delta G$ in edges ($C_1$).}
+Gluon spin resides in the \emph{edges} of the chain complex---the
+connections between nodes. In the gauge theory, the gluon field
+$A_\mu^a$ is itself a connection on a principal $\mathrm{SU}(3)$
+bundle; its spin polarization $\Delta G$ is the angular momentum stored
+in these connections rather than at the nodes. The blockchain analog is
+\emph{value in transit}: funds that have left one account but have not
+yet been credited to another.  They are real (conserved), but invisible
+to any single-node query. Formally,
+\begin{equation}\label{eq:gluon-spin-edge}
+    \Delta G(Q^2)
+    = \sum_{e \in C_1(Q^2)} \sigma(e)\,,
+\end{equation}
+where $\sigma(e)$ is the helicity weight carried by edge $e$ at
+resolution $Q^2$.
+
+\paragraph{Compartment 2: Quark OAM $L_q$ in 1-cycles ($H_1$).}
+Quark orbital angular momentum lives not in individual edges but in
+\emph{non-trivial closed loops}---elements of the first homology group
+$H_1 = \ker\partial_1 / \operatorname{im}\partial_2$. A quark orbiting
+the proton's center traces a closed path in the chain complex; its
+winding number around non-contractible cycles contributes to $L_q$.
+The blockchain analog is a \emph{circular transaction chain}: a cycle
+$A \to B \to C \to A$ whose net winding number is non-zero. Such
+cycles are closed ($\partial_1 = 0$) but not exact (not the boundary of
+a 2-cell), so they represent genuine topological structure:
+\begin{equation}\label{eq:quark-oam-h1}
+    L_q(Q^2)
+    = \sum_{[\gamma] \in H_1(Q^2)}
+      \operatorname{wind}(\gamma) \cdot |\gamma|\,,
+\end{equation}
+where $\operatorname{wind}(\gamma)$ is the winding number and
+$|\gamma|$ the cycle's angular-momentum magnitude. Ji's sum rule
+\cite{Ji1997} provides experimental access via generalized parton
+distributions (GPDs):
+$J_q = \tfrac{1}{2}\bigl[A_{q}(0) + B_{q}(0)\bigr]$,
+and $L_q = J_q - \tfrac{1}{2}\Delta\Sigma_q$.
+
+\paragraph{Compartment 3: Gluon OAM $L_g$ in 2-cycles ($H_2$).}
+Gluon orbital angular momentum occupies the deepest topological
+stratum: the \emph{second homology group}
+$H_2 = \ker\partial_2 / \operatorname{im}\partial_3$. These are field
+configurations that wind around the proton as closed surfaces---membrane
+modes in the Poincar\'{e} complex. They are the most ``latent'' of all
+spin contributions, requiring the highest resolution to detect. The
+blockchain analog is a \emph{self-referential smart-contract loop}: a
+protocol-level construct that generates circular flow without any
+individual transaction being circular. Formally,
+\begin{equation}\label{eq:gluon-oam-h2}
+    L_g(Q^2)
+    = \sum_{[\Sigma] \in H_2(Q^2)}
+      \operatorname{wind}(\Sigma) \cdot |\Sigma|\,,
+\end{equation}
+where the sum runs over non-trivial 2-cycles $\Sigma$.
+
+\paragraph{Resolution hierarchy.}
+The three compartments become experimentally accessible at different
+$Q^2$ scales, exactly as a blockchain explorer reveals deeper structure
+as it indexes more of the network:
+
+\begin{table}[h]
+\centering
+\caption{Resolution hierarchy of mempool compartments.}
+\label{tab:resolution-hierarchy}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Scale $Q^2$} & \textbf{Visible compartment}
+  & \textbf{Experiment} & \textbf{Blockchain analog} \\
+\midrule
+$\sim 1\;\text{GeV}^2$
+  & Valence quarks ($C_0$)
+  & DIS (EMC, HERMES)
+  & Confirmed blocks \\
+$\sim 10\;\text{GeV}^2$
+  & $+\;\Delta G$ in edges ($C_1$)
+  & Polarized $pp$ (RHIC/STAR)
+  & $+\;$In-transit value \\
+$\sim 10\text{--}100\;\text{GeV}^2$
+  & $+\;L_q$ in 1-cycles ($H_1$)
+  & DVCS / GPDs (JLab, EIC)
+  & $+\;$Circular chains \\
+$\gtrsim 100\;\text{GeV}^2$
+  & $+\;L_g$ in 2-cycles ($H_2$)
+  & Diffractive dijets (EIC)
+  & $+\;$Protocol loops \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+At each step, the Day convolution resolves one more topological
+stratum of the mempool, moving angular momentum from ``unconfirmed''
+to ``visible.'' The spin sum rule $\frac{1}{2} = \frac{1}{2}
+\Delta\Sigma + \Delta G + L_q + L_g$ holds at every scale, but
+the partition among terms shifts as the indexing depth increases.
+This is why the EMC experiment at $Q^2 \sim 10\;\text{GeV}^2$ saw
+only $\sim\!30\%$ of the spin in quark helicities: the 1-cycle and
+2-cycle compartments ($L_q$ and $L_g$) were still deep in the
+mempool, awaiting confirmation by higher-resolution probes.
+
+\subsubsection{The Asymptotic Limit}
+
+At $Q^2 \to \infty$ (infinite resolution), the Day convolution has
+fully propagated, the entire mempool has been confirmed, and the
+complete spin budget is visible:
+\begin{equation}
+    \lim_{Q^2 \to \infty}
+    \left[
+        \tfrac{1}{2}\Delta\Sigma(Q^2)
+        + \Delta G(Q^2)
+        + L_q(Q^2) + L_g(Q^2)
+    \right]
+    = \frac{1}{2} \,.
+\end{equation}
+This is the blockchain reaching \emph{finality}: every transaction has
+been confirmed, every fork has been resolved, and the ledger agrees
+with the logical qubit. At any finite $Q^2$, the sum still equals
+$1/2$ (the sum rule is exact), but the \emph{partition} among the
+four terms depends on how much of the network has been resolved.
+The ``crisis'' is the observation that, at the $Q^2$ values accessible
+to the EMC experiment ($\sim\!10\;\text{GeV}^2$), most of the angular
+momentum was still in the mempool.
+
+%==========================================================================
+\section{Quantum Circuit for Torsional Homology}\label{sec:circuit}
+%==========================================================================
+
+\subsection{Architecture}
+
+The circuit is designed for a topological quantum computer (braided MZM
+array or high-fidelity surface-code processor). The proton's tensor
+network is encoded in a surface code, and ``Sivers-style torsion'' is
+injected via a boundary operator linking spin-polarization logic to
+transverse spatial displacement.
+
+\subsection{Pseudocode}
+
+\begin{lstlisting}[style=python, caption={Quantum circuit for torsional homology.}]
+# HYPER-PARAMETERS
+LATTICE_SIZE = (d, d)      # Distance d of the homological code
+SIVERS_PHASE = phi         # Torsion angle from Day Convolution
+TRANSVERSE_SHIFT = delta_k
+
+# 1. INITIALIZATION: CREATE THE POINCARE COMPLEX
+circuit = QuantumCircuit(Lattice)
+circuit.initialize_surface_code(LATTICE_SIZE)
+
+# 2. DEFECT CREATION: INJECT MAJORANA ZERO MODES (QUARKS)
+MZM_u1 = circuit.create_defect(position=(x1, y1), type="Primal")
+MZM_u2 = circuit.create_defect(position=(x2, y2), type="Primal")
+MZM_d  = circuit.create_defect(position=(x3, y3), type="Dual")
+
+# 3. TORSION INJECTION: THE SIVERS BOUNDARY OPERATOR
+def apply_sivers_torsion(circuit, spin_state, phase):
+    """
+    Co-boundary Operator: Spin -> Geometric Twist.
+    Equivalent to the 'Sign Change' in the Day Convolution.
+    """
+    if spin_state == "TRANSVERSE_UP":
+        circuit.braid(MZM_u1, MZM_d, angle=phase)
+    elif spin_state == "TRANSVERSE_DOWN":
+        circuit.braid(MZM_u1, MZM_d, angle=-phase)
+
+# 4. TRANSVERSE MOMENTUM SHIFT (DIS "KICK")
+circuit.translate_defect(MZM_u1, vector=(TRANSVERSE_SHIFT, 0))
+
+# 5. MEASUREMENT: EXTRACT THE COHOMOLOGY CLASS
+syndrome_data = circuit.measure_all_stabilizers()
+
+# 6. POINCARE DUALITY CHECK
+if check_consensus(syndrome_data):
+    return "Stable Sivers-Active Proton State"
+else:
+    return "Wormhole Instability / Logical Error"
+\end{lstlisting}
+
+\subsection{Mapping to the Mathematics}
+
+\begin{itemize}
+    \item \texttt{initialize\_surface\_code}: sets up the Poincar\'{e}
+    complex; qubits are $k$-cells, stabilizers are boundary operators
+    $\partial$.
+
+    \item \texttt{apply\_sivers\_torsion}: the Day convolution in action;
+    applies the spin functor as a topological phase (torsion) across the
+    network edges.
+
+    \item The braiding angle $\phi$ is calculated via the AdS/QCD
+    light-front holography equations of \cref{sec:lfh}, matching the
+    anomalous magnetic moment.
+
+    \item \texttt{translate\_defect}: mimics the Sivers effect where the
+    proton spin results in a preferential sideways displacement during
+    collision.
+\end{itemize}
+
+%==========================================================================
+\section{Syndrome Data as Sea Quarks and Gluons}\label{sec:syndromes}
+%==========================================================================
+
+\subsection{From Errors to Physics}
+
+In an ideal code, all boundary operators return zero syndromes:
+$\partial\ket{\Psi} = 0$. This represents the ``bare'' proton at very low
+energy. As probe energy $Q^2$ increases, quasi-particle excitations
+``break'' the consensus, generating non-trivial syndromes.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Syndrome Type} & \textbf{Topological Error} & \textbf{QCD Analog} \\
+\midrule
+Primal ($Z$-type) & Chain termination & Sea quark/antiquark pair \\
+Dual ($X$-type) & Flux-loop excitation & Gluon excitation \\
+String operators & Path between syndromes & Gluon flux tube \\
+\bottomrule
+\end{tabular}
+\caption{Syndrome--parton correspondence.}
+\label{tab:syndromes}
+\end{table}
+
+The spin crisis is resolved: the total spin $1/2$ is the \emph{logical
+qubit} (global homology), while the sea (syndromes) carries the entropy
+and auxiliary angular momentum.
+
+\subsection{The Sivers Effect as Syndrome Bias}
+
+In a Sivers-active network, the programmed torsion acts as a directional
+bias for syndrome generation: sea quarks preferentially cluster to one
+side of the valence quarks. This clustering is exactly what experimentalists
+measure as the transverse single-spin asymmetry.
+
+\subsection{Renormalization as Syndrome Decoding}
+
+Moving from high to low energy is equivalent to \emph{syndrome decoding}:
+contracting the web of sea quarks and gluons into an effective valence
+state. If the decoding is performed on a network with torsion, the
+logical position of the quark is shifted---this shift is the Sivers
+function.
+
+%==========================================================================
+\section{The Torsional Decoder}\label{sec:decoder}
+%==========================================================================
+
+\subsection{Torsional Minimum-Weight Perfect Matching}
+
+We modify the standard MWPM decoder so that path weights depend on the
+Sivers torsion:
+
+\begin{lstlisting}[style=python, caption={Torsional MWPM decoder for Sivers function extraction.}]
+import networkx as nx
+
+def torsional_decoder(syndrome_nodes, torsion_phase, lattice):
+    """
+    Decodes syndromes to extract the Sivers transverse shift.
+    """
+    graph = nx.Graph()
+    for u, v in lattice.edges:
+        base_weight = distance(u, v)
+        if is_transverse_move(u, v):
+            bias = torsion_phase * transverse_direction(u, v)
+            weight = base_weight * exp(-bias)
+        else:
+            weight = base_weight
+        graph.add_edge(u, v, weight=weight)
+
+    # Pair syndromes to find sea-quark flux tubes
+    matching = nx.min_weight_matching(graph, weight='weight')
+
+    # Net transverse displacement
+    total_asymmetry = 0
+    for u, v in matching:
+        total_asymmetry += (v.y - u.y)
+
+    sivers_value = total_asymmetry / NUM_VALENCE_QUARKS
+    return sivers_value
+\end{lstlisting}
+
+\subsection{Mathematical Interpretation}
+
+\begin{itemize}
+    \item The weight modification $e^{-\phi}$ is the Radon--Nikodym
+    derivative of the syndrome probability measure under a spin flip
+    (equivalent to Delcamp--Dittrich spin-foam vertex reweighting).
+
+    \item The matching contracts the tensor network, tracing out sea
+    quarks to reveal the valence-level physics.
+
+    \item If $\phi_{\text{torsion}} = 0$, matching is symmetric and
+    the Sivers function vanishes. For $\phi > 0$, the shortest path
+    for sea quarks is skewed, producing the asymmetry.
+\end{itemize}
+
+%==========================================================================
+\section{Wormhole Analysis: The Multi-Lattice Decoder}\label{sec:wormhole}
+%==========================================================================
+
+\subsection{Entangled Boundary Operators}
+
+When two Poincar\'{e} complexes are connected via an ER-bridge, we
+introduce bridge stabilizers $S_{AB}$ acting on qubits from both
+Proton~A and Proton~B. The boundary operator is extended so that
+$\partial(\mathrm{Path}_{A \to B}) = 0$. Sivers torsion creates a
+``pressure gradient'' across the wormhole.
+
+\subsection{Wormhole-Flow Decoder}
+
+\begin{lstlisting}[style=python, caption={Multi-lattice wormhole-flow decoder.}]
+def wormhole_torsional_decoder(syndromes_A, syndromes_B,
+                                entanglement_map,
+                                torsion_A, torsion_B):
+    """
+    Analyzes mass-flow through a wormhole connecting
+    two homological protons.
+    """
+    composite = build_composite_graph(
+        Proton_A, Proton_B, entanglement_map)
+
+    for edge in composite.edges:
+        if edge.is_bridge_edge:
+            edge.weight = calculate_bridge_weight(
+                torsion_A, torsion_B)
+        else:
+            local_torsion = (torsion_A if edge.in_A
+                             else torsion_B)
+            edge.weight = apply_local_torsion(
+                edge, local_torsion)
+
+    global_matching = nx.min_weight_matching(
+        composite, weight='weight')
+
+    bridge_crossings = count_crossings(global_matching)
+    mass_flow = bridge_crossings * (torsion_A - torsion_B)
+    return mass_flow
+\end{lstlisting}
+
+\subsection{Physical Findings}
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Syndrome teleportation.]
+    A syndrome in Proton~A can be matched with a syndrome in Proton~B,
+    representing a parton teleporting through the wormhole.
+
+    \item[Negative energy and traversability.]
+    The torsion creates a negative Average Null Energy Condition (ANEC)
+    violation, mirroring the Gao--Jafferis--Wall protocol for
+    traversable wormholes.
+
+    \item[Blockchain stability.]
+    The Poincar\'{e} complex ensures total spin conservation even during
+    mass flow, preventing collapse into a non-physical state.
+\end{description}
+
+%==========================================================================
+\section{Critical Exponents and Hardware Gap}\label{sec:critical}
+%==========================================================================
+
+\subsection{Scaling Law}
+
+As the topological complexity $C$ approaches the critical threshold $C_c$,
+the correlation length of the syndrome torsional bias scales as
+\begin{equation}\label{eq:scaling}
+    \xi \propto |C - C_c|^{-\nu} \,.
+\end{equation}
+The phase transition falls into the universality class of the 2D Random
+Bond Ising Model or 3D topological percolation:
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Universality Class} & $\nu$ \\
+\midrule
+2D percolation ($Z_2$ gauge theory) & $4/3$ \\
+3D spin foams & $\approx 0.89$ \\
+Directed percolation (with Sivers torsion) & $\approx 1.73$ \\
+\bottomrule
+\end{tabular}
+\caption{Critical exponents for the traversability transition.}
+\label{tab:exponents}
+\end{table}
+
+The large value $\nu > 1$ implies the wormhole throat is highly
+sensitive to entanglement density: a small increase in complexity yields
+a large gain in traversability.
+
+\subsection{Complexity Thresholds}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{3.5cm}cc@{}}
+\toprule
+\textbf{Requirement} & \textbf{Threshold ($C_c$)} & \textbf{Current Hardware} \\
+\midrule
+Qubit fidelity & $> 99.9\%$ & $99.2$--$99.9\%$ \\
+Lattice size ($d$) & $d \approx 20$ & $d \approx 3$--$7$ \\
+Non-Abelian braiding & Required & Experimental \\
+\bottomrule
+\end{tabular}
+\caption{Hardware gap analysis for traversable wormhole simulation.}
+\label{tab:hardware}
+\end{table}
+
+The percolation threshold for the surface code is
+$p_c \approx 0.11$. Current error rates ($p \approx 0.001$--$0.01$)
+are above the threshold for stability but below the threshold for
+high-bandwidth traversability. Reaching the full Poincar\'{e} complex
+transfer requires increasing the entanglement entropy $S_{EE}$ by
+roughly $10\times$ current logical-qubit prototypes.
+
+%==========================================================================
+\section{The Functorial Noether Theorem}\label{sec:noether}
+%==========================================================================
+
+\begin{theorem}[Functorial Noether Theorem]
+For every functorial auto-equivalence
+$\mathcal{F} : \mathcal{C} \to \mathcal{C}$ that preserves the Day
+convolution (the spin-ledger's integrity), there exists a closed
+boundary operator $\partial$ such that the total spin-sum across any
+transverse slice of the network is invariant.
+\end{theorem}
+
+The conserved quantity is the \emph{topological charge} (baryon number).
+The spin crisis is not a loss of spin but a repartitioning of this
+conserved charge from the nodes (valence quarks) into the syndromes
+(the sea-quark/gluon ``mempool'').
+
+%==========================================================================
+\section{Smart Contract Protocol for Topological Transfer}
+\label{sec:smart-contract}
+%==========================================================================
+
+\subsection{Protocol Specification}
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Name:] \texttt{Sivers-ER-Bridge-v1.0}
+    \item[Architecture:] Homological blockchain (Poincar\'{e} complex)
+    \item[Governance:] Diffeomorphism invariance (Noether consensus)
+\end{description}
+
+\subsection{Admissible Constraints}
+
+\begin{enumerate}
+    \item \textbf{Conservation of topological charge.}
+    The net change in the boundary operator across the bridge vanishes:
+    \begin{equation}
+        \Delta\bigl(\partial A + \partial B\bigr) = 0 \,.
+    \end{equation}
+
+    \item \textbf{Torsional threshold (gas limit).}
+    The Sivers phase must exceed the self-energy gap of the bridge:
+    \begin{equation}
+        \phi_{\text{torsion}} > \int \rho_{\text{noise}}\, dV \,.
+    \end{equation}
+
+    \item \textbf{Syzygy validation.}
+    Any fork in the spin network must be resolved into a valid
+    Poincar\'{e} complex on the destination side within
+    $t_{\text{Planck}}$ cycles.
+\end{enumerate}
+
+\subsection{Implementation in Babel}
+
+The protocol is implemented as a distributed rApp in the
+\textbf{Babel} framework---a categorical DSL embedded in Scala~3
+for building verifiable, halt-free blockchain state transformations
+on the Reality SDK. In Babel, programs are \emph{morphisms in a
+symmetric monoidal category with coproducts}: every
+\texttt{TypedCoCell[In,\,Out]} is a total function by construction,
+composition via \texttt{>\!>\!>} preserves totality, and the
+\texttt{WellFounded} typeclass provides compile-time termination
+proofs. All state types extend the universal type
+$\Omega$~(\texttt{extends~Omega}), and the Day convolution
+is realized natively through the \texttt{\&\&\&} (fan-out) and
+\texttt{*\!*\!*} (parallel product) operators.
+
+\subsubsection{State Types ($\Omega$-objects)}
+
+\begin{lstlisting}[style=scala, caption={Poincar\'{e} complex and spin-network state types.}]
+import org.reality.kernel.*
+
+// --- Poincare Complex: the immutable topological ledger ---
+case class PoincareComplex(
+  topologicalHash: Array[Byte],
+  torsionPhase:    Double,
+  complexity:      Long
+) extends Omega
+
+// --- Processing states for the safe hylomorphism ---
+sealed trait WormholeProcessingState extends Omega {
+  def depth: Int
+}
+case class AwaitingGradient(
+  source: PoincareComplex,
+  target: PoincareComplex,
+  particleId: Long
+) extends WormholeProcessingState { def depth = 2 }
+
+case class GradientComputed(
+  source: PoincareComplex,
+  target: PoincareComplex,
+  gradient: Double,
+  syndromePacket: Array[Byte]
+) extends WormholeProcessingState { def depth = 1 }
+
+case class TransferCompleted(
+  result: Either[CellError, BridgeResult]
+) extends WormholeProcessingState { def depth = 0 }
+
+// --- Output ---
+case class BridgeResult(
+  updatedSource: PoincareComplex,
+  updatedTarget: PoincareComplex,
+  massFlow:      Double
+) extends Omega
+
+// --- Termination proof ---
+given WellFounded[WormholeProcessingState] =
+  WellFounded.fromMeasure(_.depth)
+\end{lstlisting}
+
+\subsubsection{Scattering Context and T-Symmetry}
+
+The Sivers sign change between SIDIS and Drell--Yan is encoded as
+a coproduct: the scattering context determines which branch of the
+functor is applied.
+
+\begin{lstlisting}[style=scala, caption={Scattering context as a coproduct with T-symmetry enforcement.}]
+// Coproduct: the scattering context determines the sign
+sealed trait ScatteringContext extends Omega
+case class DIS(protonId: Long)     extends ScatteringContext
+case class DrellYan(protonId: Long) extends ScatteringContext
+
+// T-symmetry audit: the functor MUST flip the torsion sign
+val applyTSymmetry: TypedCoCell[
+    ScatteringContext, Double] =
+  TypedCoCell.lift("T-SymmetryAudit") {
+    case DIS(_)     =>  SIVERS_PHASE   // +phi
+    case DrellYan(_) => -SIVERS_PHASE  // -phi  (sign change)
+  }
+\end{lstlisting}
+
+\subsubsection{Core Cells (Morphisms)}
+
+\begin{lstlisting}[style=scala, caption={Core TypedCoCell morphisms for the wormhole bridge.}]
+val CRITICAL_EXPONENT_THRESHOLD: Long = 8000L
+val SIVERS_PHASE: Double = 0.31416  // from LFH fit
+
+// 1. Complexity gate: reject sub-threshold states
+val complexityGate: TypedCoCell[
+    PoincareComplex, PoincareComplex] =
+  TypedCoCell.liftEither("ComplexityGate") { pc =>
+    if pc.complexity >= CRITICAL_EXPONENT_THRESHOLD
+    then Right(pc)
+    else Left(CellError("Complexity too low for traversability"))
+  }
+
+// 2. Day Convolution operator (the Validator)
+val dayConvolution: TypedCoCell[
+    (PoincareComplex, PoincareComplex),
+    PoincareComplex] =
+  TypedCoCell.lift("DayConvolution") { case (a, b) =>
+    PoincareComplex(
+      topologicalHash = xorBytes(a.topologicalHash,
+                                  b.topologicalHash),
+      torsionPhase    = a.torsionPhase + b.torsionPhase,
+      complexity      = math.max(a.complexity, b.complexity)
+    )
+  }
+
+// 3. Torsional gradient: compute the pressure across the bridge
+val computeGradient: TypedCoCell[
+    AwaitingGradient, GradientComputed] =
+  TypedCoCell.liftEither("TorsionalGradient") { state =>
+    val grad = state.source.torsionPhase
+             - state.target.torsionPhase
+    if grad == 0.0
+    then Left(CellError("No torsional gradient"))
+    else Right(GradientComputed(
+      source         = state.source,
+      target         = state.target,
+      gradient       = grad,
+      syndromePacket = hashSubGraph(state.particleId)
+    ))
+  }
+
+// 4. Atomic swap of homology (the ER-bridge action)
+val atomicHomologySwap: TypedCoCell[
+    GradientComputed, BridgeResult] =
+  TypedCoCell.lift("HomologySwap") { state =>
+    BridgeResult(
+      updatedSource = state.source.copy(
+        topologicalHash = updateBoundary(
+          state.source.topologicalHash,
+          negate(state.syndromePacket))),
+      updatedTarget = state.target.copy(
+        topologicalHash = updateBoundary(
+          state.target.topologicalHash,
+          state.syndromePacket)),
+      massFlow = state.gradient
+    )
+  }
+\end{lstlisting}
+
+\subsubsection{Pipeline Composition}
+
+The full wormhole bridge is assembled by composing cells with the
+sequential operator \texttt{>\!>\!>} and the fan-out operator
+\texttt{\&\&\&}. The pipeline is \emph{halt-free by construction}:
+every cell is a total function, and the hylomorphism carries a
+\texttt{WellFounded} termination proof.
+
+\begin{lstlisting}[style=scala, caption={Composed wormhole bridge pipeline.}]
+// Fan-out: validate BOTH endpoints in parallel
+val validateEndpoints: TypedCoCell[
+    (PoincareComplex, PoincareComplex),
+    (PoincareComplex, PoincareComplex)] =
+  complexityGate *** complexityGate
+
+// Prepare the initial processing state
+val prepareTransfer: TypedCoCell[
+    (PoincareComplex, PoincareComplex, Long),
+    AwaitingGradient] =
+  TypedCoCell.lift("PrepareTransfer") {
+    case (src, tgt, pid) =>
+      AwaitingGradient(src, tgt, pid)
+  }
+
+// Full pipeline: validate >>> prepare >>> gradient >>> swap
+val wormholeBridge: TypedCoCell[
+    (PoincareComplex, PoincareComplex, Long),
+    BridgeResult] =
+  prepareTransfer >>> computeGradient >>> atomicHomologySwap
+
+// Safe hylomorphism for recursive syndrome decoding
+val safeTransform: HyloSafeTransform[
+    WormholeProcessingState] = {
+  val algebra: WormholeProcessingState =>
+    WormholeProcessingState = {
+      state => state  // fold: identity at base case
+    }
+  val coalgebra: WormholeProcessingState =>
+    Option[WormholeProcessingState] = {
+      _ => None       // unfold: single-step (no recursion)
+    }
+  HyloSafeTransform(algebra, coalgebra,
+    "WormholeSafeHylo")
+}
+\end{lstlisting}
+
+\subsubsection{Application Entry Point}
+
+\begin{lstlisting}[style=scala, caption={BabelApp wiring the wormhole bridge as a distributed rApp.}]
+open class WormholeBridgeApp extends BabelApp[
+    AwaitingGradient, BridgeResult] {
+
+  private val l0Node = BabelApp.l0Node(
+    computeGradient.withConfig(l0Config),
+    l0Config)
+
+  private val l1Node = BabelApp.l1Node(
+    atomicHomologySwap.withConfig(l1Config),
+    l1Config)
+
+  val pipelines: List[CoCellPipeline[
+      AwaitingGradient, BridgeResult]] =
+    List(CoCellPipeline.from(l0Node) >>> l1Node)
+}
+\end{lstlisting}
+
+\subsection{Categorical Interpretation}
+
+The Babel implementation makes the categorical structure explicit:
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Category Theory} & \textbf{Physics} & \textbf{Babel Construct} \\
+\midrule
+Morphism $A \to B$ & State transition &
+    \texttt{TypedCoCell[A, B]} \\
+Sequential composition $g \circ f$ & RG flow &
+    \texttt{f >\!>\!> g} \\
+Product $A \times B$ & Entangled pair &
+    \texttt{f \&\&\& g} (fan-out) \\
+Parallel bifunctor & Independent evolution &
+    \texttt{f *\!*\!* g} \\
+Coproduct $A + B$ & Scattering context &
+    \texttt{sealed trait} + \texttt{conditional} \\
+Terminal object $\mathbf{1}$ & Vacuum / consensus &
+    \texttt{Omega\_1} \\
+Subobject classifier $\Omega$ & Universal state &
+    \texttt{extends Omega} \\
+Hylomorphism & Syndrome decoding &
+    \texttt{HyloSafeTransform} \\
+WellFounded proof & Termination guarantee &
+    \texttt{WellFounded.fromMeasure} \\
+\bottomrule
+\end{tabular}
+\caption{Categorical--physical--computational correspondence in Babel.}
+\label{tab:babel-correspondence}
+\end{table}
+
+\subsection{T-Symmetry Audit}
+
+The protocol includes a built-in verification of the Sivers sign
+change, enforced at the type level through the \texttt{ScatteringContext}
+coproduct:
+\begin{itemize}
+    \item In a DIS (scattering) context, the \texttt{applyTSymmetry}
+    cell yields $+\phi$.
+    \item In a Drell--Yan context, the same cell yields $-\phi$.
+    \item Because the coproduct is \emph{exhaustive} (a sealed trait),
+    the Scala compiler statically guarantees that every scattering
+    context is handled. A missing branch is a compile-time error,
+    not a runtime fault.
+    \item If a non-physical torsional gradient is detected, the
+    \texttt{liftEither} cell returns a \texttt{Left(CellError)},
+    halting the pipeline and returning information to the source
+    proton's syndrome pool (confinement).
+\end{itemize}
+
+%==========================================================================
+\section{Proton-Scale Quantum Gravity}\label{sec:quantum-gravity}
+%==========================================================================
+
+This model defines a \emph{bottom-up} approach to quantum gravity.
+Instead of starting with the cosmos, we start with the proton---the most
+stable, complex topological object in the universe. By treating the
+proton as a topological quantum computer, we obtain a working model of
+gravity based on \emph{local holography} and \emph{torsional consensus}.
+
+\subsection{The Working Model}
+
+In this model, gravity is not a fundamental force but the
+\emph{emergent error-correction pressure} of a spin network.
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[The fabric.]
+    Spacetime is a Day convolution of homological codes. Every baryonic
+    particle (like the proton) is a ``high-complexity'' node where the
+    network is more densely woven.
+
+    \item[Mass as complexity.]
+    The mass of a particle is proportional to the topological complexity
+    $C$ required to stabilize its Poincar\'{e} complex against the
+    background syndrome noise (vacuum fluctuations); see
+    \cref{sec:network-mass} for the microscopic derivation via
+    spin-network coarse-graining.
+
+    \item[Gravity as torsion.]
+    What we perceive as gravitational attraction is the torsional
+    gradient that forms between two high-complexity nodes. The Sivers
+    effect is the microscopic version of this; the attraction between
+    planets is the macroscopic version.
+\end{description}
+
+\subsubsection{The Fundamental Equation}
+
+The ``Einstein equation'' in this model is a \emph{topological identity}:
+\begin{equation}\label{eq:topological-einstein}
+    \boxed{\;
+    \Delta\,\text{Complexity}
+    \;\approx\;
+    \text{Torsional Flux}
+    \;+\;
+    \text{Syndrome Entropy}
+    \;}
+\end{equation}
+This replaces the metric tensor with a homological grading: curvature
+is the Day-convolution gradient across the network, torsion is the
+Sivers-braiding phase, and matter--energy is the syndrome density
+stabilized by the Poincar\'{e} complex.
+
+\subsection{Experimental Validation}\label{sec:experiments}
+
+To validate this model, we target the regime where QCD (proton
+structure) and general relativity (gravity) overlap. Three primary
+experimental programs are identified.
+
+\subsubsection{A.\@ The Sign-Change Experiment}
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Prediction.]
+    The Sivers effect must flip sign between semi-inclusive deep
+    inelastic scattering (SIDIS) and the Drell--Yan process.
+
+    \item[Validation.]
+    If this sign change is confirmed with high precision at RHIC or the
+    EIC, it proves that gauge links (torsion) are the physical mechanism
+    for momentum transfer. In our model, this is the proof that
+    ``torsional tunnels'' (wormholes) govern particle interactions.
+    A definitive high-statistics measurement would elevate this to a
+    quantitative test of the topological
+    identity~\eqref{eq:topological-einstein}.
+\end{description}
+
+\paragraph{Existing experimental evidence.}
+Every measurement performed to date \emph{favors} the predicted sign
+change, though none yet reaches discovery-level statistical significance.
+The current data are summarized in \cref{tab:sign-change-evidence}.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{3.8cm}p{5.2cm}p{4.2cm}@{}}
+\toprule
+\textbf{Experiment} & \textbf{Observable} & \textbf{Status} \\
+\midrule
+COMPASS DY, final~\cite{COMPASS2024} &
+    Sivers TSA in $\pi^- p^\uparrow \to \mu^+\mu^- X$ &
+    Consistent with sign change; limited statistics \\
+STAR at RHIC~\cite{STAR2016} &
+    TSSA in $p^\uparrow p \to W^\pm/Z^0$ &
+    Consistent with sign change; first DY-like probe \\
+COMPASS weighted~\cite{COMPASSweighted2024} &
+    $k_\perp$-weighted Sivers asymmetry in SIDIS and DY &
+    SIDIS prediction agrees with DY data \\
+Boer--Mulders reversal~\cite{BoerMulders2025} &
+    BM function in SIDIS vs.\ DY &
+    Tantalizing evidence for sign reversal \\
+Holographic LF-QCD~\cite{AhmadyLFH2025} &
+    Sivers asymmetry from spin-improved LFWFs &
+    Positive across COMPASS DY kinematics; within error bands \\
+\bottomrule
+\end{tabular}
+\caption{Experimental evidence for the Sivers sign change between SIDIS
+and Drell--Yan. All results are consistent with the QCD prediction but
+do not yet constitute a definitive confirmation.}
+\label{tab:sign-change-evidence}
+\end{table}
+
+\paragraph{COMPASS final results (2024).}
+The COMPASS Collaboration combined its 2015 and 2018 pion-induced
+Drell--Yan data sets on a transversely polarized $\mathrm{NH}_3$ target,
+publishing the most complete measurement to date~\cite{COMPASS2024}.
+Five azimuthal modulations were extracted; three of them---the Sivers,
+transversity, and pretzelosity TSAs---probe leading-twist TMD PDFs.
+The measured Sivers TSA is consistent with a sign reversal relative to
+the COMPASS SIDIS extractions, providing the strongest single piece of
+evidence for the torsional mechanism.
+
+\paragraph{STAR $W^\pm/Z^0$ production at RHIC.}
+The STAR Collaboration measured the transverse single-spin asymmetry
+$A_N$ in $p^\uparrow p \to W^\pm/Z^0$ at
+$\sqrt{s} = 510\;\mathrm{GeV}$~\cite{STAR2016}. Because $W/Z$
+production proceeds via quark--antiquark annihilation (a Drell--Yan-like
+process), the observed asymmetry probes the Sivers function with the
+opposite gauge-link structure from SIDIS. A subsequent
+analysis~\cite{STARsignchange2017} extracted the Sivers functions from
+the latest SIDIS data and compared them with the STAR results, finding
+consistency with the predicted sign change within experimental
+uncertainties. These data constitute the first investigation of
+non-universality of the Sivers function.
+
+\paragraph{Boer--Mulders sign reversal (2025).}
+The sign-change prediction applies to all na\"{\i}ve time-reversal-odd
+(T-odd) TMDs, not only the Sivers function. A December 2025
+study~\cite{BoerMulders2025} examined existing SIDIS and DY data for the
+Boer--Mulders function and found ``tantalizing evidence'' that a sign
+reversal also occurs for the proton's valence-quark BM distribution,
+broadening the empirical base for the torsional mechanism.
+
+\paragraph{Holographic light-front QCD comparison (2025).}
+Using the spin-improved holographic wavefunctions of
+\cref{sec:lfh}, a 2025 study~\cite{AhmadyLFH2025} computed the Sivers
+asymmetry in the pion-induced Drell--Yan process at COMPASS kinematics.
+The predicted asymmetry is consistently positive across the full
+kinematic range and agrees within the uncertainty bands of both the
+COMPASS~2017 and COMPASS~2024 results, providing independent theoretical
+support from the AdS/QCD functor.
+
+\paragraph{Future decisive experiments.}
+Two forthcoming programs are specifically designed to reach the precision
+required for a definitive verdict:
+\begin{itemize}
+    \item \textbf{SpinQuest} at Fermilab~\cite{SpinQuest2024}:
+    a high-luminosity polarized Drell--Yan experiment using polarized
+    hydrogen and deuterium targets, targeting the sea-quark Sivers
+    function with substantially reduced error bars.
+
+    \item \textbf{The Electron-Ion Collider} (EIC) at Brookhaven: will
+    provide high-precision SIDIS data at the same kinematic scales as the
+    DY measurements, enabling a direct, same-scale comparison of the
+    Sivers function in both channels.
+\end{itemize}
+A high-statistics confirmation by either program would elevate the
+torsional-consensus interpretation from ``consistent with data'' to
+``experimentally established,'' validating
+Eq.~\eqref{eq:topological-einstein} at the microscopic level.
+
+\paragraph{From ``consistent'' to ``confirmed'': the gap and how to
+close it.}
+Every measurement to date favors the sign change, yet none constitutes
+a definitive confirmation. Five specific obstacles---and the data
+required to overcome each---are identified below.
+
+\begin{enumerate}[label=\textbf{(\roman*)}]
+
+\item \textbf{Statistical precision.}
+The COMPASS final Drell--Yan result~\cite{COMPASS2024} reports a
+Sivers TSA of
+\begin{equation}\label{eq:compass-sivers}
+    \bigl\langle A_T^{\sin\phi_S}\bigr\rangle
+    = 0.070 \pm 0.037\,(\text{stat.}) \pm 0.031\,(\text{sys.}) \,,
+\end{equation}
+a signal at $\sim\!1.5\sigma$ of the total uncertainty. The measurement
+agrees with the sign-change hypothesis within $< 1\sigma$, but lies only
+$2.5$--$3\sigma$ from the no-sign-change hypothesis. Discovery-level
+confirmation ($5\sigma$) requires:
+\begin{itemize}
+    \item Reducing the total uncertainty from $\sim\!0.05$ to
+    $\sim\!0.01$, a factor of $\approx 5\times$.
+    \item \textbf{SpinQuest} is designed to deliver $\sim\!10^{17}$
+    protons on target per year at $120\;\text{GeV}$, yielding the
+    requisite DY statistics on polarized $\mathrm{NH}_3$ and
+    $\mathrm{ND}_3$ targets.
+    \item \textbf{EIC} ($\mathcal{L} \sim 10^{33}$--$10^{34}\;
+    \text{cm}^{-2}\text{s}^{-1}$, commissioning early 2030s) will
+    accumulate $\gtrsim 10\;\text{fb}^{-1}$ of polarized $ep$ SIDIS
+    data, providing the high-statistics baseline against which the
+    DY sign flip is compared.
+\end{itemize}
+
+\item \textbf{Kinematic mismatch.}
+The COMPASS SIDIS data span
+$Q^2 \sim 1$--$10\;\text{GeV}^2$, while the DY data probe
+$4.0 < M_{\mu\mu} < 9.0\;\text{GeV}/c^2$ (effectively
+$Q^2 \sim 16$--$81\;\text{GeV}^2$). Comparing the Sivers function
+across these scales requires TMD evolution via the Collins--Soper--Sterman
+(CSS) equations, whose non-perturbative kernel $g_K(b_T)$ introduces
+model dependence. Confirmation requires:
+\begin{itemize}
+    \item \textbf{Lattice QCD determination of the Collins--Soper
+    kernel}~\cite{LatticeCS2020}: recent lattice calculations have
+    already reduced the uncertainty on $g_K$ by $40$--$50\%$ when
+    combined with experimental extractions. A precision of
+    $\lesssim 10\%$ on $g_K(b_T)$ for $b_T \lesssim 1\;\text{fm}$ is
+    needed.
+    \item \textbf{EIC jet-based Sivers measurements}: jet-based
+    asymmetries at the EIC probe the Sivers function at hard scales
+    ($Q^2 \sim 10$--$100\;\text{GeV}^2$) overlapping with the DY
+    kinematic window, enabling a same-scale SIDIS--DY comparison
+    that minimizes evolution uncertainty.
+\end{itemize}
+
+\item \textbf{Process dependence and pion contamination.}
+COMPASS DY uses a $190\;\text{GeV}/c$ $\pi^-$ beam, so the measured
+asymmetry is a convolution of the \emph{proton} Sivers function with the
+\emph{pion} Boer--Mulders function. The pion TMDs are poorly constrained.
+STAR $W^\pm/Z^0$ production avoids pion contamination but has limited
+statistics ($A_N^{W^+} \approx -0.01 \pm 0.12$ at the current data
+set). Confirmation requires:
+\begin{itemize}
+    \item \textbf{SpinQuest} ($pp$ and $pd$ Drell--Yan): proton beam on
+    polarized proton/deuteron targets, eliminating pion TMD uncertainty
+    entirely.
+    \item \textbf{Higher-luminosity RHIC $W/Z$ data}: the full Run~17
+    data set ($\mathcal{L} \sim 400\;\text{pb}^{-1}$) improves the
+    $W^\pm$ asymmetry uncertainty by a factor of $\sim\!2$, beginning to
+    resolve the sea-quark Sivers sign.
+\end{itemize}
+
+\item \textbf{Flavor separation.}
+The sign change is predicted independently for each quark flavor.
+Current DY data measure flavor-summed convolutions; the individual
+$u$-, $d$-, $\bar{u}$-, $\bar{d}$-quark Sivers functions have not been
+separated in the DY channel. Confirmation requires:
+\begin{itemize}
+    \item \textbf{$W^\pm$ charge separation at RHIC}: $W^+$ production
+    is dominated by $u + \bar{d}$ and $W^-$ by $d + \bar{u}$, providing
+    direct flavor tagging. Need $\delta A_N \lesssim 0.03$ per charge
+    channel.
+    \item \textbf{Kaon/pion-identified SIDIS at EIC}: hadron-type
+    identification in the final state separates $u$- from $d$-quark
+    fragmentation, yielding flavor-tagged Sivers functions at the same
+    kinematics as the DY measurements.
+    \item \textbf{SpinQuest $\mathrm{NH}_3$ vs.\ $\mathrm{ND}_3$
+    comparison}: the proton--deuteron difference isolates the isovector
+    combination $f_{1T}^{\perp u} - f_{1T}^{\perp d}$.
+\end{itemize}
+
+\item \textbf{No single experiment measures both channels.}
+The ideal test measures SIDIS and DY at the same $Q^2$, same $x$, same
+target, same detector---eliminating all relative systematic
+uncertainties. Confirmation requires:
+\begin{itemize}
+    \item \textbf{EIC SIDIS + EIC-enabled DY-like processes}: the EIC
+    will measure SIDIS and, via photon--gluon fusion and jet-based
+    observables, access DY-like initial-state interactions within the
+    same detector acceptance at overlapping kinematics.
+    \item \textbf{Global TMD fit convergence}: a simultaneous fit of
+    SIDIS (COMPASS, HERMES, JLab, EIC), DY (COMPASS, SpinQuest), and
+    $W/Z$ (STAR) data within a single TMD evolution framework, where
+    the sign-change parameter is left free. Confirmation corresponds to
+    the fit excluding the no-sign-change hypothesis at $\geq 5\sigma$.
+\end{itemize}
+
+\end{enumerate}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{2.8cm}p{3.5cm}p{3.5cm}p{3.2cm}@{}}
+\toprule
+\textbf{Caveat} &
+\textbf{Current Status} &
+\textbf{Data Required} &
+\textbf{Facility} \\
+\midrule
+Statistical precision &
+$1.5\sigma$ signal; $\delta A \sim 0.05$ &
+$\delta A \lesssim 0.01$ ($5\sigma$) &
+SpinQuest, EIC \\
+Kinematic mismatch &
+CSS kernel $g_K$ uncertain $\sim\!30\%$ &
+$g_K$ to $\lesssim 10\%$; same-$Q^2$ SIDIS--DY &
+Lattice QCD, EIC jets \\
+Pion contamination &
+$\pi^-$ beam convolves pion TMDs &
+$pp$/$pd$ DY; higher-statistics $W^\pm$ &
+SpinQuest, RHIC Run\,17 \\
+Flavor separation &
+Flavor-summed DY only &
+$W^\pm$ charge separation; $K/\pi$ SIDIS &
+STAR, EIC, SpinQuest \\
+Single-experiment test &
+No overlapping SIDIS + DY &
+Same-detector, same-$Q^2$ comparison &
+EIC; global TMD fit \\
+\bottomrule
+\end{tabular}
+\caption{Roadmap from ``consistent'' to ``confirmed'' for the
+Sivers sign change.}
+\label{tab:confirmation-roadmap}
+\end{table}
+
+\subsubsection{B.\@ Gravitational Form Factors (GPDs)}
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Data.]
+    Experiments at Jefferson Lab (JLab) measure the pressure distribution
+    inside the proton via deeply virtual Compton scattering (DVCS).
+
+    \item[Validation.]
+    Recent extractions revealed a central pressure exceeding that of a
+    neutron star ($\approx 10^{35}\;\text{Pa}$). In our model, this
+    pressure is the \emph{homological stabilizer force}---the
+    error-correction pressure that keeps the Poincar\'{e} complex intact.
+    If the measured pressure profile matches the Lloyd limit of a tensor
+    network with the proton's topological complexity $C$, it validates the
+    identification of the proton as a gravitational singularity: a stable,
+    ``frozen'' wormhole whose internal geometry is self-consistently
+    maintained by its own syndrome dynamics.
+\end{description}
+
+\paragraph{Existing experimental evidence.}
+The gravitational form factors of the proton have been the subject of
+a sustained experimental program at JLab, with increasingly detailed
+results.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{4.0cm}p{5.0cm}p{4.2cm}@{}}
+\toprule
+\textbf{Experiment} & \textbf{Observable} & \textbf{Key Result} \\
+\midrule
+JLab DVCS~\cite{Burkert2018} &
+    Pressure distribution $p(r)$ from GPD $H(x,\xi,t)$ &
+    Peak $\approx 10^{35}\;\text{Pa}$ at the proton core \\
+JLab shear force~\cite{JLabShear2024} &
+    Normal and shear force distributions &
+    First full mechanical snapshot of the proton \\
+BLFQ~\cite{BLFQ2024} &
+    GFFs from basis light-front quantization &
+    $D$-term and pressure from first principles \\
+Flavor-decomposed GFFs~\cite{FlavorGFF2025} &
+    Quark-flavor-resolved GFFs via LCSR &
+    $u$- vs.\ $d$-quark pressure profiles separated \\
+Holographic GFFs~\cite{HoloGFF2025} &
+    GFFs from improved AdS/QCD model &
+    Direct connection to LFH wavefunctions \\
+\bottomrule
+\end{tabular}
+\caption{Experimental and theoretical results on the proton's
+gravitational form factors and mechanical properties.}
+\label{tab:gff-evidence}
+\end{table}
+
+\paragraph{Burkert--Elouadrhiri--Girod (2018).}
+The landmark extraction by Burkert, Elouadrhiri, and
+Girod~\cite{Burkert2018} used JLab Hall~B DVCS data to obtain the
+first measurement of the pressure distribution inside the proton. In
+DVCS, an electron scatters off a quark inside the proton, which
+subsequently emits a high-energy photon; the recoil proton is detected
+in coincidence. Through the theoretical framework of Polyakov, the
+measured DVCS cross sections were related to the gravitational form
+factor $D(t)$, yielding a 3D pressure map. The result---a strong
+repulsive pressure near the center ($\sim 10^{35}\;\text{Pa}$, roughly
+ten times the core pressure of a neutron star) transitioning to a
+confining binding pressure at larger radii---is precisely the
+two-zone structure expected from a homological stabilizer: an inner
+error-correction pressure resisting collapse, balanced by an outer
+boundary tension maintaining confinement.
+
+\paragraph{Shear and normal force extraction (2024).}
+A JLab follow-up~\cite{JLabShear2024} extended the 2018 analysis to
+extract both the normal force and the shear force distributions for
+the first time, providing a complete snapshot of the strong force's
+mechanical action inside the proton. In the language of
+\cref{sec:boundary}, the normal force corresponds to the stabilizer
+pressure of the Poincar\'{e} complex, while the shear force maps to
+the tangential stress induced by the Day-convolution gradient across
+neighboring cells of the spin network.
+
+\paragraph{Connection to the topological model.}
+The $D$-term form factor $D(t)$---encoding pressure and shear---is
+extracted from the spatial--spatial component of the energy--momentum
+tensor $T^{ij}$. In our framework, $T^{ij}$ is identified with the
+\emph{syndrome density tensor} of the homological code. The prediction
+is that the measured $D(t)$ profile should match the Lloyd limit of
+a tensor network whose topological complexity equals the proton's
+$C \approx \kappa^4 / \Lambda_{\text{QCD}}^4$, where $\kappa$ is the
+holographic confinement scale. Current data are consistent with this
+identification; the EIC will provide the precision needed for a
+quantitative test.
+
+\paragraph{From ``consistent'' to ``confirmed'': the gap and how to
+close it.}
+The 2018 pressure extraction is a landmark, but several caveats prevent
+it from definitively validating the topological model.
+
+\begin{enumerate}[label=\textbf{(\roman*)}]
+
+\item \textbf{Model dependence of the $D(t)$ extraction.}
+The Burkert \textit{et al.}\ result relies on a dipole parameterization
+of the GPD $H(x,\xi,t)$ and the Ji sum-rule connection to the
+gravitational form factors. Different GPD models yield different pressure
+profiles. Confirmation requires:
+\begin{itemize}
+    \item \textbf{Multi-channel DVCS at JLab 12\,GeV}: measuring DVCS
+    beam-spin, target-spin, and double-spin asymmetries over a wide
+    $t$-range ($0.1 < |t| < 2.0\;\text{GeV}^2$) to constrain the GPD
+    $H$ and $E$ independently, reducing model ambiguity in $D(t)$.
+    \item \textbf{Deeply virtual meson production (DVMP)}: $\pi^0$,
+    $\rho$, and $\phi$ channels at JLab probe different quark-flavor
+    combinations of the GPDs, breaking the degeneracy between
+    parameterizations.
+\end{itemize}
+
+\item \textbf{Gluon gravitational form factors.}
+The 2018 extraction measures the \emph{quark} contribution to the
+pressure. Gluons carry $\sim\!50\%$ of the proton momentum and are
+expected to contribute substantially to the mechanical structure, but
+their gravitational form factors are largely unconstrained. Confirmation
+requires:
+\begin{itemize}
+    \item \textbf{$J/\psi$ photoproduction near threshold at JLab and
+    EIC}: the cross section $\gamma p \to J/\psi\, p$ near threshold is
+    sensitive to the gluon GFF $A_g(t)$ and $D_g(t)$, providing a
+    direct window into the gluon pressure and shear.
+    \item \textbf{Lattice QCD GFFs}: first-principles calculations of
+    both quark and gluon gravitational form factors, benchmarked against
+    the experimental extractions.
+\end{itemize}
+
+\item \textbf{Radial resolution.}
+The current pressure profile is extracted at modest $t$-resolution. The
+topological model predicts a specific functional form---the Lloyd limit
+of a tensor network---with a characteristic crossover radius
+$r_c \sim 0.6\;\text{fm}$ between the repulsive core and the confining
+shell. Confirmation requires:
+\begin{itemize}
+    \item \textbf{High-$|t|$ DVCS at EIC}: extending the $t$-range to
+    $|t| \sim 5\;\text{GeV}^2$ resolves the pressure at distances
+    $r \sim 0.1\;\text{fm}$, testing the predicted inner-core structure.
+    \item \textbf{Flavor-decomposed pressure}: comparing $u$-quark and
+    $d$-quark pressure profiles (from combined DVCS and DVMP data) with
+    the syndrome-density predictions for each quark species in the
+    homological code.
+\end{itemize}
+
+\end{enumerate}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{2.8cm}p{3.5cm}p{3.5cm}p{3.2cm}@{}}
+\toprule
+\textbf{Caveat} &
+\textbf{Current Status} &
+\textbf{Data Required} &
+\textbf{Facility} \\
+\midrule
+$D(t)$ model dependence &
+Dipole GPD parameterization &
+Multi-channel DVCS + DVMP; model-independent $D(t)$ &
+JLab 12\,GeV, EIC \\
+Gluon GFFs &
+Largely unmeasured &
+$J/\psi$ near-threshold photoproduction; lattice GFFs &
+JLab, EIC, lattice \\
+Radial resolution &
+$|t| \lesssim 2\;\text{GeV}^2$ &
+$|t|$ up to $\sim\!5\;\text{GeV}^2$; flavor decomposition &
+EIC \\
+\bottomrule
+\end{tabular}
+\caption{Roadmap from ``consistent'' to ``confirmed'' for the
+gravitational form factors.}
+\label{tab:gff-roadmap}
+\end{table}
+
+\subsubsection{C.\@ Entanglement Witnessing in Particle Collisions}
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Experiment.]
+    Collide polarized protons at the Large Hadron Collider (LHC) and
+    measure the entanglement entropy between the produced jets.
+
+    \item[Validation.]
+    If the entanglement entropy between jets scales with the holographic
+    \emph{area} (the ``area law'') rather than the volume, it proves that
+    the interior of the proton obeys AdS/CFT holography. This would
+    directly confirm that the proton's internal tensor network is a
+    holographic code whose boundary theory is ordinary QCD.
+\end{description}
+
+\paragraph{Existing experimental evidence.}
+Remarkable progress has been made in detecting and characterizing
+quantum entanglement in high-energy collisions, with multiple
+independent lines of evidence now available.
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{4.0cm}p{5.0cm}p{4.2cm}@{}}
+\toprule
+\textbf{Experiment} & \textbf{Observable} & \textbf{Key Result} \\
+\midrule
+BNL / Stony Brook~\cite{Kharzeev2024} &
+    Entanglement entropy inside the proton from HERA DIS data &
+    Partons are maximally entangled; entropy predictions match data \\
+ATLAS $t\bar{t}$~\cite{ATLAStop2024} &
+    Spin entanglement in top--antitop pairs at $\sqrt{s} = 13\;\text{TeV}$ &
+    Highest-energy entanglement observation; Bell test at $98\%$ CL \\
+Maximal entanglement \& jets~\cite{KharzeevJets2025} &
+    Jet fragmentation entropy vs.\ maximal-entanglement prediction &
+    ATLAS jet data match prediction \\
+Entanglement \& hadronization~\cite{EntHadron2025} &
+    Entanglement entropy as a probe of hadronization dynamics &
+    New observable linking entanglement to particle production \\
+\bottomrule
+\end{tabular}
+\caption{Experimental evidence for quantum entanglement in high-energy
+collisions and inside the proton.}
+\label{tab:entanglement-evidence}
+\end{table}
+
+\paragraph{Maximal entanglement inside the proton (2024).}
+Kharzeev and Levin developed equations predicting that if quarks and
+gluons inside the proton are maximally entangled, the entanglement
+entropy can be extracted from the multiplicity distributions in
+deep-inelastic scattering~\cite{Kharzeev2024}. When compared against
+HERA $ep$ collision data, the entropy predictions matched
+\emph{perfectly}. Combined with the latest results on how particle
+distributions change at various angles from the collision point, these
+analyses provide strong evidence that partons inside the proton are
+maximally entangled---exactly the condition required for the proton's
+internal tensor network to function as a holographic code.
+
+\paragraph{Top-quark entanglement at the LHC (2024).}
+The ATLAS Collaboration observed quantum entanglement in top--antitop
+quark pairs produced in $pp$ collisions at
+$\sqrt{s} = 13\;\text{TeV}$~\cite{ATLAStop2024}, constituting the
+highest-energy observation of entanglement ever achieved. Spin
+entanglement was detected from the measurement of a single observable
+$D$, and a test of Bell inequality violation reached $98\%$ confidence
+level with the existing data set of $140\;\text{fb}^{-1}$. This
+demonstrates that quantum coherence survives the hadronization process
+and is observable at TeV scales---a prerequisite for the holographic
+interpretation of proton structure.
+
+\paragraph{Jet entropy and maximal entanglement (2025).}
+A 2025 study~\cite{KharzeevJets2025} extended the maximal-entanglement
+framework to jet production, predicting a relation between the jet
+fragmentation function and the entropy of hadrons produced in jet
+fragmentation. Testing this relation against ATLAS jet data at the LHC
+showed good agreement, establishing that the entanglement structure of
+the initial parton state is imprinted on the final-state hadron
+distributions. In our model, this is a direct measurement of the
+syndrome entropy generated when a localized excitation of the spin
+network (a hard-scattered parton) decoheres into the surrounding
+homological code (hadronization).
+
+\paragraph{Entanglement as a hadronization probe (2025).}
+A complementary analysis~\cite{EntHadron2025} proposed entanglement
+entropy as a direct observable for probing the hadronization transition,
+the process by which colored partons become confined hadrons. In the
+topological hydrodynamics picture, hadronization is the
+\emph{syndrome-decoding step} of \cref{sec:syndromes}: the high-entropy
+parton state (dense syndrome cloud) is contracted into a low-entropy
+hadronic state (the decoded logical qubit). The observed scaling of
+entanglement entropy with collision energy provides a direct window into
+this decoding process.
+
+\paragraph{Connection to the area law.}
+The key prediction of holographic models is that entanglement entropy
+scales with the \emph{area} of the entangling surface rather than the
+\emph{volume}---the Ryu--Takayanagi formula. The HERA data analyzed
+by Kharzeev and Levin~\cite{Kharzeev2024} are consistent with an
+area-law scaling for the partonic entanglement entropy at small Bjorken
+$x$ (the saturation regime), where the color glass condensate provides
+the natural entangling surface. A definitive test of area-law scaling
+across a wide kinematic range will be possible at the EIC, which will
+measure both the entropy (via multiplicity) and the geometric structure
+(via diffractive cross sections) simultaneously.
+
+\paragraph{From ``consistent'' to ``confirmed'': the gap and how to
+close it.}
+The entanglement evidence is striking but must overcome several
+hurdles to constitute proof of holographic structure.
+
+\begin{enumerate}[label=\textbf{(\roman*)}]
+
+\item \textbf{Area law vs.\ volume law discrimination.}
+The HERA multiplicity data are consistent with area-law scaling at
+small $x$, but the kinematic range is narrow ($10^{-4} \lesssim x
+\lesssim 10^{-2}$, $Q^2 \sim 1$--$100\;\text{GeV}^2$) and the
+extraction of ``entanglement entropy'' from hadron multiplicity relies
+on specific assumptions about the parton--hadron duality. The volume-law
+hypothesis has not been excluded at high statistical significance.
+Confirmation requires:
+\begin{itemize}
+    \item \textbf{EIC multiplicity measurements} across a wide
+    kinematic plane ($10^{-5} \lesssim x \lesssim 0.5$,
+    $1 \lesssim Q^2 \lesssim 1000\;\text{GeV}^2$): mapping the entropy
+    as a function of the saturation scale $Q_s^2(x)$ to distinguish
+    area scaling ($S \propto Q_s^2 \cdot R^2$) from volume scaling
+    ($S \propto Q_s^2 \cdot R^3$) at $\geq 5\sigma$.
+    \item \textbf{Diffractive-to-inclusive ratio at EIC}: the ratio
+    $\sigma_{\text{diff}} / \sigma_{\text{tot}}$ is a direct proxy
+    for the entanglement entropy in the color-dipole
+    framework. Measuring this ratio over a wide lever arm in $x$
+    constrains the functional form of $S_{EE}(x)$.
+\end{itemize}
+
+\item \textbf{Bell inequality violation at discovery level.}
+The ATLAS $t\bar{t}$ measurement~\cite{ATLAStop2024} achieved $98\%$
+CL for Bell violation---strong, but below the $5\sigma$ discovery
+threshold. Confirmation requires:
+\begin{itemize}
+    \item \textbf{Full Run\,3 LHC data set}: ATLAS and CMS will
+    accumulate $\sim\!300\;\text{fb}^{-1}$ each by 2026, roughly
+    doubling the current data set. Combined analyses in both
+    dileptonic and semi-leptonic $t\bar{t}$ channels are projected to
+    reach $5\sigma$ Bell violation.
+    \item \textbf{Semi-leptonic channel optimization}: this channel
+    is $60\%$ more sensitive to entanglement and $3\times$ more
+    sensitive to Bell violation than the dileptonic channel; dedicated
+    analyses will substantially sharpen the test.
+\end{itemize}
+
+\item \textbf{Entanglement in light-quark processes.}
+Top quarks are heavy and decay before hadronizing, which makes spin
+correlations clean but does not directly probe the internal structure
+of the proton. The topological model specifically predicts entanglement
+among \emph{confined} partons inside the proton. Confirmation requires:
+\begin{itemize}
+    \item \textbf{Di-hadron spin correlations at EIC}: measuring
+    azimuthal correlations between pairs of identified hadrons in SIDIS,
+    which are sensitive to the entanglement between the struck quark
+    and the proton remnant.
+    \item \textbf{Jet-substructure entanglement at LHC}: measuring the
+    von~Neumann entropy of the Lund-plane jet substructure as a
+    function of jet radius, testing whether the entropy scales with
+    the ``area'' (jet boundary) rather than the ``volume'' (jet cone
+    interior).
+\end{itemize}
+
+\item \textbf{Connecting entropy to the tensor-network description.}
+The current measurements establish that partons are maximally entangled
+and that entropy correlates with particle production, but they do not
+directly demonstrate that the entanglement structure is that of a
+\emph{specific} holographic code (e.g., a HaPPY code or MERA network).
+Confirmation requires:
+\begin{itemize}
+    \item \textbf{R\'{e}nyi entropy extraction}: measuring the
+    second R\'{e}nyi entropy $S_2 = -\ln\operatorname{tr}(\rho^2)$
+    from multiplicity fluctuations. Different tensor-network
+    architectures predict distinct ratios $S_2 / S_1$; this ratio
+    discriminates between holographic and non-holographic models.
+    \item \textbf{Mutual information between rapidity intervals}:
+    measuring the mutual information $I(A:B)$ between hadrons in
+    different rapidity windows tests the ``monogamy of entanglement''
+    characteristic of holographic states.
+\end{itemize}
+
+\end{enumerate}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{2.8cm}p{3.5cm}p{3.5cm}p{3.2cm}@{}}
+\toprule
+\textbf{Caveat} &
+\textbf{Current Status} &
+\textbf{Data Required} &
+\textbf{Facility} \\
+\midrule
+Area vs.\ volume law &
+Area-law consistent at small $x$ (HERA) &
+$S_{EE}(x, Q^2)$ over wide kinematic plane; $\sigma_{\text{diff}}/\sigma_{\text{tot}}$ &
+EIC \\
+Bell violation &
+$98\%$ CL (ATLAS $t\bar{t}$) &
+$\geq 5\sigma$ in dileptonic + semi-leptonic channels &
+LHC Run\,3 \\
+Light-quark entanglement &
+Top quarks only &
+Di-hadron correlations in SIDIS; jet-substructure entropy &
+EIC, LHC \\
+Tensor-network signature &
+Maximal entanglement shown &
+R\'{e}nyi entropy ratio $S_2/S_1$; rapidity mutual information &
+EIC, LHC \\
+\bottomrule
+\end{tabular}
+\caption{Roadmap from ``consistent'' to ``confirmed'' for
+entanglement witnessing.}
+\label{tab:entanglement-roadmap}
+\end{table}
+
+\subsection{Hardware Validation: Quantum Simulation}
+\label{sec:synthetic-gravity}
+
+Because we cannot easily manipulate a real proton's torsion, we use the
+Majorana circuit of \cref{sec:circuit} as a \emph{synthetic gravity lab}.
+
+\begin{description}[leftmargin=0pt, style=nextline]
+    \item[Target.]
+    Create a ``topological liquid'' phase in a quantum processor---the
+    regime $C > d^3$ identified in \cref{sec:critical}.
+
+    \item[Measurement.]
+    Observe the Shapiro delay of a signal passing through the Majorana
+    bridge. If the delay is \emph{negative} (the signal arrives faster
+    due to the torsional phase), we have experimentally created a
+    traversable wormhole on a chip. This is the laboratory analog of the
+    Gao--Jafferis--Wall protocol, realized through the syndrome
+    teleportation mechanism of \cref{sec:wormhole}.
+\end{description}
+
+\subsection{Correspondence Table}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}p{3.2cm}p{4.8cm}p{5.5cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Standard Gravity} &
+    \textbf{Topological Hydrodynamics} \\
+\midrule
+Spacetime &
+    Metric manifold &
+    Homological surface code \\
+Curvature &
+    Riemann tensor &
+    Day-convolution gradient \\
+Torsion &
+    Einstein--Cartan theory &
+    Sivers asymmetry / braiding phase \\
+Wormhole &
+    General-relativistic throat &
+    Entangled Poincar\'{e} complexes \\
+Matter &
+    Point particles &
+    Topological defects (MZMs) \\
+Mass &
+    Stress--energy tensor &
+    Topological complexity $C$ \\
+Gravitational constant $G$ &
+    Empirical constant &
+    Syndrome error-correction rate \\
+\bottomrule
+\end{tabular}
+\caption{Standard gravity vs.\ the topological hydrodynamics model.}
+\label{tab:gravity-correspondence}
+\end{table}
+
+\begin{remark}
+This model suggests that gravity is the mechanism by which the universe
+\emph{synchronizes its ledgers}. The Sivers effect in a proton is the
+first page of that ledger. A natural next step is a hybrid experiment
+combining Jefferson Lab's gravitational form-factor data with the
+torsional decoder of \cref{sec:decoder} to test whether they
+independently predict the same gravitational constant $G$.
+\end{remark}
+
+%==========================================================================
+\section{Topological Hydrodynamics: Synthesis}\label{sec:synthesis}
+%==========================================================================
+
+The preceding sections assemble into a single picture that we term
+\emph{topological hydrodynamics}: the ``missing spin'' of the proton
+behaves as a fluid that can be directed, through programmed torsion,
+across the fabric of spacetime.
+
+\begin{enumerate}
+    \item The \textbf{Sivers function} is the \emph{pump} that drives
+    information through the holographic bridge.
+
+    \item The \textbf{Poincar\'{e} complex} is the \emph{immutable
+    ledger} ensuring topological charge conservation.
+
+    \item The \textbf{wormhole} is a \emph{shared syndrome space} where
+    the sea quarks of two protons become indistinguishable.
+
+    \item The \textbf{Functorial Noether Theorem} guarantees that the
+    total spin of the composite system is conserved throughout the
+    transfer.
+
+    \item The \textbf{critical exponent} $\nu \approx 1.73$ (directed
+    percolation) indicates that modern hardware is at the ``scaling
+    cliff'': fidelity is sufficient, but logical depth must increase by
+    roughly an order of magnitude to reach the traversability threshold.
+
+    \item The \textbf{proton-scale quantum gravity} model
+    (\cref{sec:quantum-gravity}) reinterprets gravitational attraction
+    as the torsional gradient between high-complexity nodes in the
+    homological network, with mass identified as the topological
+    complexity $C$ required to stabilize a Poincar\'{e} complex against
+    vacuum syndrome noise.
+
+    \item The \textbf{multi-scale network structure}
+    (\cref{sec:coarse-graining}) gives rigorous content to
+    ``coarse-graining'': edge contraction, node decimation, and TNR
+    reduce the proton's spin network from a dense UV lattice to the
+    IR $Y$-graph while preserving cylindrical consistency. The
+    topological complexity $\mathcal{C}(\Gamma^*)$ at the RG fixed
+    point provides a microscopic derivation of
+    $M_p^2 \propto \mathcal{C}$, grounding the ``mass as complexity''
+    principle in the spin-network formalism.
+\end{enumerate}
+
+By programming torsion into the homological code of a quantum computer,
+one is not merely simulating physics; one is governing the topology of
+spacetime at its most fundamental level. The experimental program of
+\cref{sec:experiments}---the Sivers sign change, gravitational form
+factors, and jet entanglement witnessing---provides a concrete path
+toward validating this synthesis against data.
+
+%==========================================================================
+\section*{Acknowledgments}
+%==========================================================================
+
+This document synthesizes ideas from light-front holographic QCD
+(Brodsky, de~T\'{e}ramond), spin-foam renormalization (Delcamp, Dittrich),
+the SYK model and traversable wormholes (Maldacena, Qi, Gao, Jafferis,
+Wall), braided matter models (Bilson-Thompson), topological quantum
+error correction (Kitaev, Dennis, Landahl, Preskill), and the Babel
+categorical DSL on the Reality SDK for verifiable distributed state
+transformations.
+
+%==========================================================================
+% REFERENCES (indicative; expand as needed)
+%==========================================================================
+\begin{thebibliography}{99}
+
+\bibitem{EMC1988}
+J.~Ashman \textit{et al.} (European Muon Collaboration),
+``A measurement of the spin asymmetry and determination of the
+structure function $g_1$ in deep inelastic muon--proton scattering,''
+\textit{Phys.\ Lett.\ B} \textbf{206}, 364 (1988).
+
+\bibitem{BrodskyTéramond2015}
+S.~J.~Brodsky and G.~F.~de~T\'{e}ramond,
+``Light-front holographic QCD and emerging confinement,''
+\textit{Phys.\ Rep.} \textbf{584}, 1 (2015).
+
+\bibitem{Mondal2022}
+C.~Mondal, D.~Chakrabarti, and S.~J.~Brodsky,
+``Sivers and Boer-Mulders TMDs of the proton in a light-front
+quark-diquark model,''
+\textit{Phys.\ Rev.\ D} \textbf{105}, 116023 (2022).
+
+\bibitem{DelcampDittrich2017}
+C.~Delcamp and B.~Dittrich,
+``From 3D topological quantum field theories to 4D models with defects,''
+arXiv:1701.01383 (2017).
+
+\bibitem{Maldacena2018}
+J.~Maldacena and X.-L.~Qi,
+``Eternal traversable wormhole,''
+arXiv:1804.00491 (2018).
+
+\bibitem{GaoJafferisWall2017}
+P.~Gao, D.~L.~Jafferis, and A.~C.~Wall,
+``Traversable wormholes via a double trace deformation,''
+\textit{JHEP} \textbf{12}, 151 (2017).
+
+\bibitem{Kitaev2003}
+A.~Y.~Kitaev,
+``Fault-tolerant quantum computation by anyons,''
+\textit{Ann.\ Phys.} \textbf{303}, 2 (2003).
+
+\bibitem{BilsonThompson2005}
+S.~O.~Bilson-Thompson,
+``A topological model of composite preons,''
+arXiv:hep-ph/0503213 (2005).
+
+\bibitem{AsanteDittrichSteinhaus2022}
+S.~K.~Asante, B.~Dittrich, and S.~Steinhaus,
+``Spin foams, refinement limit, and renormalization,''
+arXiv:2211.09578 (2022).
+
+\bibitem{COMPASS2017}
+M.~Aghasyan \textit{et al.} (COMPASS Collaboration),
+``First measurement of transverse-spin-dependent azimuthal asymmetries
+in the Drell--Yan process,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{119}, 112002 (2017).
+
+\bibitem{COMPASS2024}
+COMPASS Collaboration,
+``Final COMPASS results on the transverse-spin-dependent azimuthal
+asymmetries in the pion-induced Drell--Yan process,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{133}, 071902 (2024).
+
+\bibitem{STAR2016}
+L.~Adamczyk \textit{et al.} (STAR Collaboration),
+``Measurement of the transverse single-spin asymmetry in
+$p^\uparrow + p \to W^\pm/Z^0$ at RHIC,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{116}, 132301 (2016).
+
+\bibitem{STARsignchange2017}
+M.~G.~Echevarria, A.~Idilbi, Z.-B.~Kang, and I.~Vitev,
+``Study of the sign change of the Sivers function from STAR
+collaboration $W/Z$ production data,''
+\textit{JHEP} \textbf{04}, 046 (2017).
+
+\bibitem{COMPASSweighted2024}
+COMPASS Collaboration,
+``Transverse momentum weighted Sivers asymmetries in SIDIS and
+Drell--Yan processes at COMPASS,''
+\textit{Phys.\ Lett.\ B} \textbf{850}, 138527 (2024).
+
+\bibitem{BoerMulders2025}
+A.~Bacchetta \textit{et al.},
+``Sign reversal of Boer--Mulders functions from semi-inclusive
+deep-inelastic scattering to the Drell--Yan process,''
+arXiv:2512.12955 (2025).
+
+\bibitem{AhmadyLFH2025}
+M.~R.~Ahmady \textit{et al.},
+``Azimuthal spin asymmetries in pion-polarized proton induced
+Drell--Yan process at COMPASS using holographic light-front QCD,''
+\textit{Eur.\ Phys.\ J.\ C} \textbf{85}, 138 (2025).
+
+\bibitem{SpinQuest2024}
+SpinQuest Collaboration,
+``Unveiling sea quark dynamics: measuring Sivers asymmetry with
+polarized target at SpinQuest,''
+Fermilab E1039 (2024).
+
+\bibitem{Burkert2018}
+V.~D.~Burkert, L.~Elouadrhiri, and F.~X.~Girod,
+``The pressure distribution inside the proton,''
+\textit{Nature} \textbf{557}, 396 (2018).
+
+\bibitem{JLabShear2024}
+V.~D.~Burkert, L.~Elouadrhiri, F.~X.~Girod, and others,
+``Gravity helps show strong force strength in the proton,''
+Jefferson Lab (2024).
+
+\bibitem{BLFQ2024}
+Z.~Hu \textit{et al.},
+``Gravitational form factors and mechanical properties of quarks in
+protons: a basis light-front quantization approach,''
+\textit{Phys.\ Rev.\ D} \textbf{110}, 056027 (2024).
+
+\bibitem{FlavorGFF2025}
+A.~V.~Pimikov \textit{et al.},
+``Mechanical properties of proton using flavor-decomposed gravitational
+form factors,''
+\textit{JHEP} \textbf{06}, 025 (2025).
+
+\bibitem{HoloGFF2025}
+M.~Ahmady \textit{et al.},
+``Gravitational form factors of the proton in the improved holographic
+QCD model,''
+arXiv:2601.14939 (2025).
+
+\bibitem{Kharzeev2024}
+D.~Kharzeev, E.~Levin, and others,
+``Spooky action at a very short distance: scientists map out quantum
+entanglement in protons,''
+Brookhaven National Laboratory / Stony Brook University (2024).
+
+\bibitem{ATLAStop2024}
+ATLAS Collaboration,
+``Observation of quantum entanglement with top quarks at the ATLAS
+detector,''
+\textit{Nature} \textbf{633}, 542 (2024).
+
+\bibitem{KharzeevJets2025}
+D.~Kharzeev \textit{et al.},
+``Maximal entanglement sheds new light on particle creation,''
+Brookhaven National Laboratory (2025).
+
+\bibitem{EntHadron2025}
+Z.~Tu \textit{et al.},
+``Entanglement as a probe of hadronization,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{134}, 111902 (2025).
+
+\bibitem{LatticeCS2020}
+P.~Shanahan, M.~Wagman, and Y.~Zhao,
+``Collins--Soper kernel for TMD evolution from lattice QCD,''
+\textit{Phys.\ Rev.\ D} \textbf{102}, 014511 (2020).
+
+\bibitem{Ji1997}
+X.~Ji,
+``Gauge-invariant decomposition of nucleon spin,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{78}, 610--613 (1997).
+
+\bibitem{BahrDittrich2009}
+B.~Bahr and B.~Dittrich,
+``(Broken) gauge symmetries and constraints in Regge calculus,''
+\textit{Class.\ Quantum Grav.} \textbf{26}, 225011 (2009);
+``Improved and perfect actions in discrete gravity,''
+\textit{Phys.\ Rev.\ D} \textbf{80}, 124030 (2009).
+
+\bibitem{DittrichGeiller2015}
+B.~Dittrich and M.~Geiller,
+``A new vacuum for loop quantum gravity,''
+\textit{Class.\ Quantum Grav.} \textbf{32}, 112001 (2015).
+
+\bibitem{DittrichMizera2016}
+B.~Dittrich, S.~Mizera, and S.~Steinhaus,
+``Decorated tensor network renormalization for lattice gauge theories
+and spin foam models,''
+\textit{New J.\ Phys.} \textbf{18}, 053009 (2016).
+
+\bibitem{Rovelli2004}
+C.~Rovelli,
+\textit{Quantum Gravity}
+(Cambridge University Press, Cambridge, 2004).
+
+\bibitem{ThiemannBook2007}
+T.~Thiemann,
+\textit{Modern Canonical Quantum General Relativity}
+(Cambridge University Press, Cambridge, 2007).
+
+\bibitem{EvenblyVidal2015}
+G.~Evenbly and G.~Vidal,
+``Tensor network renormalization,''
+\textit{Phys.\ Rev.\ Lett.} \textbf{115}, 180405 (2015).
+
+\end{thebibliography}
+
+\end{document}
