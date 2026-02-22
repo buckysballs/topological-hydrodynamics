@@ -104,6 +104,49 @@ capabilities.
 \newpage
 
 %==========================================================================
+\section{Introduction}\label{sec:introduction}
+%==========================================================================
+
+Many modern theories propose that reality is computational in nature.
+Wheeler's ``it from bit,'' Bostrom's simulation argument, loop quantum
+gravity's discrete spin networks, the holographic principle---these are no
+longer fringe ideas. Across physics, computer science, and philosophy, a
+rough consensus is forming: whatever the universe \emph{is}, it behaves like
+a computation.
+
+Yet most simulation hypotheses stop at the metaphor. They assert ``it's a
+computation'' but never specify \emph{what kind} of computation. This paper
+takes the next step. If spacetime is a program, it must be built on
+\textbf{well-founded recursion}---a programming model in which every
+computation is guaranteed to terminate, every process is total, and the
+system is halt-free by construction~\cite{BabelTextbook}. The universe does
+not crash. It does not diverge. It settles. That constraint alone is enough
+to derive the categorical and topological structures we observe.
+
+Under this lens, the proton spin crisis is not a mystery but a
+\textbf{debugging clue}. When quark spins account for only $30\%$ of total
+proton spin, we are observing a measurement artifact analogous to querying a
+distributed system mid-transaction. The ``missing'' spin is not missing---it
+is in the mempool, awaiting confirmation. The Sivers asymmetry sign change
+between deep inelastic scattering and Drell--Yan is not a paradox but a
+\textbf{gauge artifact}: the same data read from two different entry points
+in the program's execution graph. The inconsistencies of particle physics
+are the edge cases of a running program.
+
+If spacetime runs on topological code, then understanding that code means we
+can modify it. This paper develops the tools to do exactly that: a
+categorical programming language for torsion, a syndrome monad that captures
+gravitational effects as computational side effects, and a protocol for
+teleporting topological charge between entangled regions. Programming a
+wormhole is not metaphor---it is the logical consequence of treating
+spacetime as executable topology.
+
+The ideas that follow are speculative, but they are not unfalsifiable. The
+paper closes with five concrete predictions testable at existing facilities
+---RHIC, the Electron-Ion Collider, and near-term quantum hardware. The
+standard is simple: if the program model is right, the data will show it.
+
+%==========================================================================
 \section{The Proton Spin Crisis}\label{sec:spin-crisis}
 %==========================================================================
 
@@ -819,7 +862,7 @@ Treating spin nodes as a simplicial complex:
 Programming a wormhole is equivalent to constructing a \emph{cross-chain
 functor}: the Day convolution ensures that the Poincar\'{e} complex of
 Proton~A is entangled (isomorphic) with that of Proton~B. By programming
-MZM torsion (the Sivers effect), one writes a ``smart contract'' into the
+MZM torsion (the Sivers effect), one writes a ``well-founded protocol''~\cite{BabelTextbook} into the
 fabric of spacetime, forcing two distinct regions into a single
 homological identity.
 
@@ -1201,9 +1244,9 @@ Wormhole (ER bridge) &
 Entangled Poincar\'{e} complexes: the Day convolution connects two
 protons into a shared syndrome space \\
 
-Smart contract &
+Well-founded protocol &
 Topological transfer protocol &
-The \texttt{WormholeBridgeApp} of \cref{sec:smart-contract}: a
+The \texttt{WormholeBridgeApp} of \cref{sec:well-founded}: a
 self-executing set of constraints governing syndrome teleportation \\
 \end{longtable}
 
@@ -1364,7 +1407,7 @@ $H_2 = \ker\partial_2 / \operatorname{im}\partial_3$. These are field
 configurations that wind around the proton as closed surfaces---membrane
 modes in the Poincar\'{e} complex. They are the most ``latent'' of all
 spin contributions, requiring the highest resolution to detect. The
-blockchain analog is a \emph{self-referential smart-contract loop}: a
+blockchain analog is a \emph{self-referential well-founded loop}: a
 protocol-level construct that generates circular flow without any
 individual transaction being circular. Formally,
 \begin{equation}\label{eq:gluon-oam-h2}
@@ -1591,7 +1634,7 @@ The physical interpretation is immediate:
     state to a final state \emph{plus} syndrome excitations.
     \item Kleisli composition $(g \mathbin{>\!\!=\!\!>} f)$ is the
     \texttt{>\!>\!>} operator in the Babel DSL
-    (\cref{sec:smart-contract}).
+    (\cref{sec:well-founded}).
     \item In the language of Moggi~\cite{Moggi1991}: syndrome
     generation is the \emph{computational side effect}; pure
     computations (via $\eta$) are topological operations that preserve
@@ -2139,8 +2182,8 @@ conserved charge from the nodes (valence quarks) into the syndromes
 (the sea-quark/gluon ``mempool'').
 
 %==========================================================================
-\section{Smart Contract Protocol for Topological Transfer}
-\label{sec:smart-contract}
+\section{Well-Founded Protocol for Topological Transfer}
+\label{sec:well-founded}
 %==========================================================================
 
 \subsection{Protocol Specification}
@@ -2565,7 +2608,7 @@ engineering an ER bridge between two chain complexes could create a
 ``gravitational shortcut'': syndrome teleportation through the bridge
 would modify the effective torsional gradient between the endpoints.
 This is the microscopic mechanism behind the \texttt{atomicHomologySwap}
-Babel morphism defined in \cref{sec:smart-contract}.
+Babel morphism defined in \cref{sec:well-founded}.
 
 %==========================================================================
 \section{Proton-Scale Quantum Gravity}\label{sec:quantum-gravity}
@@ -3853,6 +3896,12 @@ E.~Riehl,
 S.~Lloyd,
 ``Ultimate physical limits to computation,''
 \textit{Nature} \textbf{406}, 1047--1054 (2000).
+
+\bibitem{BabelTextbook}
+Reality SDK Team,
+``Babel: Halt-Free Extension of the Scala Programming Language ---
+Principles and Practices of Halt-Free Distributed Computation,''
+Babel API Documentation, Version~1.0.
 
 \end{thebibliography}
 
